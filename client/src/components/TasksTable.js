@@ -31,7 +31,7 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
 
 
 
-    async function saveTask(task) {
+    //async function saveTask(task) {
 
         // const fullDate = format(new Date(), "dd/MM/yyyy HH:mm")
         // setConcluded(fullDate)
@@ -60,8 +60,24 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
         // })
 
 
-    }
+   // }
 
+//    const templateParams = {
+//     unity: user.name,
+//     subject: subject,
+//     message: obs,
+//     email: item.userEmail
+//   }
+
+//   function sendEmail() {
+//     emailjs.send("service_uw92p6x", "template_shcpe8x", templateParams, "BrAq6Nxcac_3F_GXo")
+//       .then((response) => {
+//         console.log("Email enviado ", response.status, response.text)
+//       })
+//       .catch((err) => {
+//         console.log(err)
+//       })
+//   }
 
     function editClient(t, item) {
         setType(t)
