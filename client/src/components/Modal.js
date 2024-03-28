@@ -196,7 +196,7 @@ export default function Modal({ tipo, close, item, getDoc }) {
       setObs("")
       toast.success("Observação salva")
       sendEmail()
-      close()
+      //close()
     })
 
 
