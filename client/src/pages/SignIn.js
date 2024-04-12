@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from '../images/Logo.png'
 import logoEngrenagem from '../images/logo-engrenagem.png'
 import { AuthContext } from '../context/auth'
@@ -13,7 +13,14 @@ import { toast } from 'react-toastify'
 
 function SignIn() {
 
-  const { logIn, loadingAuth } = useContext(AuthContext)
+  const { logIn, loadingAuth, user } = useContext(AuthContext)
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    if (user){
+      navigate('/dashboard')
+  }
+  },[user])
 
   const validationLogin = yup.object().shape({
     login: yup.string().email("Digite um email válido").required("Digite seu email"),
@@ -38,12 +45,15 @@ function SignIn() {
       <div className="container-login">
         <h1>Login</h1>
         <form className="form" onSubmit={handleSubmit(handleLogin)}>
-          <input type='text' name="login" placeholder="Digite seu Login" {...register("login")} ></input>
+          <input className="input-focus" type='text' name="login" placeholder="Digite seu Login" {...register("login")} ></input>
           <p>{errors.login?.message}</p>
           <input type='password' name="password" {...register("password")} placeholder="Digite sua senha"></input>
           <button type="submit">{loadingAuth ? 'Carregando...' : 'Logar'}</button>
         </form>
-        <Link to='/register'>Cadastrar</Link>
+        <div className="link-container">
+          <Link to='/register'>Cadastrar</Link>
+          <Link to='/emailcheck'>Esqueci a senha</Link>
+        </div>
       </div>
     </div>
   );

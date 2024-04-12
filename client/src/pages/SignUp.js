@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from '../images/Logo.png'
 import logoEngrenagem from '../images/logo-engrenagem.png'
 import { AuthContext } from "../context/auth";
@@ -11,6 +11,8 @@ import * as yup from "yup"
 function SignUp() {
 
   const { registerUser, loadingAuth } = useContext(AuthContext)
+  
+  const navigate = useNavigate()
 
   const validationLogin = yup.object().shape({
     name: yup.string().required("Digite seu nome"),
@@ -23,8 +25,8 @@ function SignUp() {
   })
 
   const signUp = (value) => {
-    // registerUser(value)
-    // console.log(name login password)
+    registerUser(value)
+    
   }
 
   
@@ -44,7 +46,7 @@ function SignUp() {
           <p>{errors.login?.message}</p>
           <input type='password' name="password" {...register("password")} placeholder="Digite sua senha"></input>
           <p>{errors.password?.message}</p>
-          <Link onClick={signUp} to='confirmation'><button type="submit">{loadingAuth ? 'Carregando...' : 'Cadastrar'}</button></Link>  
+          <button type="submit">{loadingAuth ? 'Carregando...' : 'Cadastrar'}</button> 
           
         </form>
         <Link to='/'>Já possui cadastro? Clique aqui</Link>

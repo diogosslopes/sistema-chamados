@@ -10,14 +10,15 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from "yup"
 import { toast } from 'react-toastify'
 import Axios from "axios";
+import emailjs from '@emailjs/browser'
 
 
-function SignIn() {
+function ConfirmEmail() {
 
   const { logIn, loadingAuth, user, baseURL } = useContext(AuthContext)
 
   const validationLogin = yup.object().shape({
-    emailToken: yup.string().required("Digite o codigo de confirmação")
+    email: yup.string().email("Digite um e-mail válido").required("Digite um email válido")
 
   })
 
@@ -26,21 +27,17 @@ function SignIn() {
   })
 
   const handleLogin = async (value) => {
-    await Axios.post(`${baseURL}/confirmUser`, {
-      email: user.email,
-      emailToken: value.emailToken
-    }).then((result) => {
-      if (result.data === true) {
-        const newUser = {
-          login: user.email,
-          password: user.password
-        }
-        logIn(newUser)
-      } else {
-        toast.error('Código de confirmação inválido')
-      }
-    })
+    const templateParams = {
+      email: value.email
   }
+  
+
+  emailjs.send("service_g9rl1tf", "template_8ng1o8m", templateParams, "mBCqpYRtx6G_wfeFI")
+      .then((response) => {
+          console.log("Email enviado ", response.status, response.text)
+      })
+}
+  
 
 
 
@@ -50,10 +47,10 @@ function SignIn() {
         <img src={logo} />
       </div>
       <div className="container-login">
-        <h1>Verifique seu Email</h1>
+        <h1>Confirme seu Email</h1>
         <form className="form" onSubmit={handleSubmit(handleLogin)}>
-          <input type='text' name="emailToken" placeholder="Digite o codigo enviado por e-mail" {...register("emailToken")} ></input>
-          <p>{errors.emailToken?.message}</p>
+          <input type='text' name="email" placeholder="Digite o seu e-mail" {...register("email")} ></input>
+          <p>{errors.email?.message}</p>
           <button type="submit">{loadingAuth ? 'Carregando...' : 'Confirmar'}</button>
         </form>
       </div>
@@ -62,4 +59,4 @@ function SignIn() {
 }
 
 
-export default SignIn;
+export default ConfirmEmail;

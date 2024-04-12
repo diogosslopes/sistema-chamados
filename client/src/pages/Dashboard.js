@@ -51,7 +51,7 @@ export default function Dashboard() {
 
 
   const [newTask, setNewTask] = useState({})
-  const [client, setClient] = useState(user.name)
+  const [client, setClient] = useState(user)
   const [clients, setClients] = useState([])
   const [priority, setPriority] = useState()
   const [subject, setSubject] = useState()
@@ -76,6 +76,7 @@ export default function Dashboard() {
   let newTasks = []
   let newObsList = []
 
+    console.log(user)
 
 
   const { register, handleSubmit, formState: { errors } } = useForm({

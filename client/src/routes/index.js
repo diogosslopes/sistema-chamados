@@ -1,6 +1,5 @@
 
-import { Switch } from 'react-router-dom';
-import Route from './Route';
+import { Routes, Route } from 'react-router-dom';
 
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
@@ -11,21 +10,28 @@ import Profile from '../pages/Profile';
 import Clients from '../pages/Clients';
 import CompletedTasks from '../pages/CompletedTasks';
 import Reports from '../pages/Reports';
+import PrivateRoutes from './PrivateRoutes';
+import ConfirmEmail from '../pages/ConfirmEmail';
+import ChangePassword from '../pages/ChangePassword';
 
 
 
-export default function Routes() {
+export default function Rotas() {
   return (
-    <Switch>
-      <Route exact path="/" component={SignIn} />
-      <Route exact path="/register" component={SignUp} />
-      <Route exact path="/confirmation" component={ConfirmationPage} />
-      <Route exact path="/dashboard" component={Dashboard} isPrivate />
-      <Route exact path="/completedtasks" component={CompletedTasks} isPrivate />
-      <Route exact path="/reports" component={Reports} isPrivate />
-      <Route exact path="/profile" component={Profile} isPrivate />
-      <Route exact path="/clients" component={Clients} isPrivate />
+    <Routes>
 
-    </Switch>
+      <Route exact path="/completedtasks" element={<PrivateRoutes><CompletedTasks /></PrivateRoutes>} />
+      <Route exact path="/reports" element={<PrivateRoutes><Reports /></PrivateRoutes>} />
+      <Route exact path="/profile" element={<PrivateRoutes><Profile /></PrivateRoutes>} />
+      <Route exact path="/clients" element={<PrivateRoutes><Clients /></PrivateRoutes>} />
+      <Route exact path="/dashboard" element={<PrivateRoutes ><Dashboard  /></PrivateRoutes>} />
+
+      <Route exact path="/" element={<SignIn />} />
+      <Route exact path="/register" element={<SignUp />} />
+      <Route exact path="/emailcheck" element={<ConfirmEmail />} />
+      <Route exact path="/recovery/:email" element={<ChangePassword/> } />
+      <Route exact path="/confirmation" element={<ConfirmationPage />} />
+
+    </Routes>
   )
 }
