@@ -26,6 +26,7 @@ export default function Rotas() {
       <Route exact path="/clients" element={<PrivateRoutes><Clients /></PrivateRoutes>} />
       <Route exact path="/dashboard" element={<PrivateRoutes ><Dashboard  /></PrivateRoutes>} />
 
+      {/* <Route exact path="/dashboard" element={<Dashboard />} /> */}
       <Route exact path="/" element={<SignIn />} />
       <Route exact path="/register" element={<SignUp />} />
       <Route exact path="/emailcheck" element={<ConfirmEmail />} />

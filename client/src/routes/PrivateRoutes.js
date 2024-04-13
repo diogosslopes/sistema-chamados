@@ -11,9 +11,7 @@ const PrivateRoutes = ({children}) =>{
 
 const { user, signed } = useContext(AuthContext)
 
-const location = useLocation()
-const navigate = useNavigate()
-const token = false
+
 
 
 return(
