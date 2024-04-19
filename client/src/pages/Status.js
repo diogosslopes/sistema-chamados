@@ -20,11 +20,11 @@ export default function Subjects() {
 
     const validation = yup.object().shape({
         status: yup.string().required("Nome é obrigatório")
-        
+
     })
 
-    const {  baseURL } = useContext(AuthContext)
-    
+    const { baseURL } = useContext(AuthContext)
+
     const [status, setStatus] = useState('') //tasktype
     const [statusId, setStatusId] = useState('') //tasktype
     const [statusList, setStatusList] = useState([]) //tasktype
@@ -40,22 +40,20 @@ export default function Subjects() {
     const save = async value => {
 
 
-        console.log("Tipo" + status)
 
-        
-        if(editing === true){
+
+        if (editing === true) {
             Axios.put(`${baseURL}/editStatus`, {
                 status: status,
                 id: statusId
-            }).then(() =>{
+            }).then(() => {
                 toast.success('Edição realizada com sucesso')
                 setStatus('')
             })
-            console.log(statusId)
-        }else{
+        } else {
             Axios.post(`${baseURL}/registerStatus`, {
                 status: status
-            }).then(() =>{
+            }).then(() => {
                 toast.success('Status cadastrado com sucesso')
                 setStatus('')
             })
@@ -74,22 +72,21 @@ export default function Subjects() {
         async function loadTaskType() {
 
             await Axios.get(`${baseURL}/getStatus`).then((response) => {
-                
+
                 response.data.forEach((doc) => {
                     list.push({
                         id: doc.id,
                         status: doc.status,
-                        
+
                     })
-                    
+
                 })
-                
-                setStatusList(list)   
+
+                setStatusList(list)
             })
-            
+
         }
         loadTaskType()
-        console.log(statusList)
     }, [status, statusId])
 
 
@@ -97,12 +94,9 @@ export default function Subjects() {
 
     function editingTaskType(c) {
 
-        console.log(c)
         setEditing(true)
-        setStatus (c.status)
+        setStatus(c.status)
         setStatusId(c.id)
-        // showForm()
-        // toast.success("Editado com sucesso")
     }
 
     function deleteItem(id) {
@@ -111,7 +105,6 @@ export default function Subjects() {
     }
 
 
-    //--------------------------------------------------- MYSQL ---------------------------------------------------------------------------------------
 
 
     return (
@@ -131,7 +124,7 @@ export default function Subjects() {
 
                             <div className="buttons">
                                 <button type="submit">Salvar</button>
-                                <button type="button" onClick={() => {setStatus("")}}>Limpar</button>
+                                <button type="button" onClick={() => { setStatus("") }}>Limpar</button>
                             </div>
                         </div>
                         <article className="error-message">
@@ -152,7 +145,7 @@ export default function Subjects() {
                 })}
             </div>
             {showModal && (
-                <DeleteModal close={deleteItem} id={statusId} bd={"status"}  />
+                <DeleteModal close={deleteItem} id={statusId} bd={"status"} />
             )}
         </div>
     )

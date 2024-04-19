@@ -90,13 +90,9 @@ export default function CompletedTasks() {
 
     setTasks([])
     Axios.get(`${baseURL}/getCompletedTasks`).then((response) => {
-      // loadTasks(response.data)
       newTasks = response.data
       Axios.get(`${baseURL}/getObsList`).then((response) => {
-        // loadTasks(response.data)
         newObsList = response.data
-        console.log(response.data)
-        // loadTasks(newTasks, newObsList)
         if (user.group === "admin") {
           loadTasks(newTasks, newObsList)
 
@@ -114,7 +110,6 @@ export default function CompletedTasks() {
   async function loadTasks(docs, obs) {
 
     const isTaksEmpty = docs.length === 0
-    console.log(isEmpty)
 
 
     if (!isTaksEmpty) {
@@ -134,7 +129,6 @@ export default function CompletedTasks() {
           taskId: doc.taskId,
           taskImages: doc.taskImages
         })
-        console.log(list)
       })
 
 
@@ -156,22 +150,17 @@ export default function CompletedTasks() {
 
   async function nextTasks() {
 
-    console.log(lastTask.taskId)
 
     setLoadingMore(true)
 
     await Axios.get(`${baseURL}/getObsList`).then((response) => {
-      // loadTasks(response.data)
       newObsList = response.data
       Axios.post(`${baseURL}/getNextCompletedTasks`, {
         taskId: lastTask.taskId
       }).then((response) => {
-        // loadTasks(response.data)
         newTasks = response.data
-        // loadTasks(newTasks, newObsList)
-        console.log(response.data)
 
-        if(response.data.length >0){
+        if (response.data.length > 0) {
           if (user.group === "admin") {
             setTasks("")
             loadTasks(newTasks, newObsList)
@@ -182,8 +171,8 @@ export default function CompletedTasks() {
             const obsDocs = newObsList.filter((o) => user.name === o.client)
             loadTasks(tasksDocs, obsDocs)
             setFirstPage(false)
-           }
-        }else{
+          }
+        } else {
           setLoadingMore(false)
           setIsEmpty(true)
           toast.warning("Não existem mais chamados")
@@ -196,20 +185,15 @@ export default function CompletedTasks() {
 
   async function previousTasks() {
 
-    console.log(firstTask.taskId)
 
     setLoadingMore(true)
 
     await Axios.get(`${baseURL}/getObsList`).then((response) => {
-      // loadTasks(response.data)
       newObsList = response.data
       Axios.post(`${baseURL}/getPreviousCompletedTasks`, {
         taskId: firstTask.taskId
       }).then((response) => {
-        // loadTasks(response.data)
         newTasks = response.data
-        // loadTasks(newTasks, newObsList)
-        console.log(response.data)
 
         if (response.data.length > 0) {
           if (user.group === "admin") {
@@ -275,7 +259,6 @@ export default function CompletedTasks() {
 
   async function filter(e) {
 
-    console.log(tasks)
     e.preventDefault()
     setLoading(true)
     setTasks('')
@@ -309,7 +292,6 @@ export default function CompletedTasks() {
   }
 
   async function orderBy(order) {
-    console.log(order)
     setTasks('')
 
     Axios.post(`${baseURL}/orderBy`, {
@@ -317,15 +299,12 @@ export default function CompletedTasks() {
     }).then((response) => {
       const tasksDocs = response.data
 
-      console.log(tasksDocs)
       setIsEmpty(false)
       setLoadingMore(false)
       loadTasks(tasksDocs, newObsList)
     })
 
-    // const docs = await firebase.firestore().collection('completedtasks').orderBy(order, 'asc').get()
-    // await loadTasks(docs)
-    // console.log(e)
+
 
   }
 
@@ -458,7 +437,7 @@ export default function CompletedTasks() {
             </div>
             {/* <TasksTable tasks={tasks} order={orderBy} page={'completedtasks'} /> */}
             {loadingMore ? <Loading /> : <TasksTable tasks={tasks} order={orderBy} page={'completedtasks'} />}
-            
+
 
             {!loadingMore && !firstPage && <button className="button-hover" onClick={previousTasks}>Página Anterior</button>}
             {!loadingMore && !isEmpty && <button className="button-hover" onClick={nextTasks}>Proxima Página</button>}

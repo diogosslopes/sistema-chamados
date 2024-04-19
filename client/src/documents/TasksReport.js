@@ -6,7 +6,6 @@ import pdfFonts from 'pdfmake/build/vfs_fonts'
 function TasksReport(tasks) {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
-    console.log(tasks)
 
     
     

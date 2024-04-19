@@ -91,22 +91,20 @@ export default function Dashboard() {
 
     }
 
-    // loadClients()
-    // getDocs()
 
     if (user.group === 'admin') {
       setIsAdmin(true)
       setDisable(false)
     }
 
- 
+
   }, [])
 
   useEffect(() => {
-    
-    if(taskType === "TI"){
+
+    if (taskType === "TI") {
       setSubjects(subjectsTi)
-    }else{
+    } else {
       setSubjects(subjectsGeneral)
     }
 
@@ -117,12 +115,10 @@ export default function Dashboard() {
     let listTasks = []
     if (user.group === "admin") {
       /* const docs = await firebase.firestore().collection('tasks').orderBy('created', 'desc').limit('2').get() */
-      const docs = firebase.firestore().collection('tasks').orderBy('created', 'desc').limit('20').onSnapshot((snapshot)=>{
-        snapshot.forEach((doc)=>{
-          console.log(doc.data())
+      const docs = firebase.firestore().collection('tasks').orderBy('created', 'desc').limit('20').onSnapshot((snapshot) => {
+        snapshot.forEach((doc) => {
           listTasks.push(doc.data())
         })
-        console.log(listTasks)
 
       })
     } else {
@@ -134,9 +130,8 @@ export default function Dashboard() {
 
   }
   async function loadTasks(docs) {
-    
-    console.log(docs)
-    
+
+
     const isTaksEmpty = docs.size === 0
 
     if (!isTaksEmpty) {
@@ -155,7 +150,6 @@ export default function Dashboard() {
         })
       })
 
-      console.log(list)
 
       const lastDoc = docs[docs.length - 1]
       setLastTask(lastDoc)
@@ -200,12 +194,9 @@ export default function Dashboard() {
           await firebase.storage().ref(`task-images/${user.id}`)
             .child(images[i].name).getDownloadURL()
             .then(async (url) => {
-              console.log(url)
               taskImages.push(url)
             })
         })
-      console.log(images[i].name)
-      console.log(taskImages)
 
     }
 
@@ -240,11 +231,7 @@ export default function Dashboard() {
     })
       .then(() => {
         toast.success("Chamado registrado !")
-       /*  setTasks('') */
-        // saveImages(images)
         closeForm()
-        /* getDocs() */
-        /* sendEmail() */
       })
       .catch((error) => {
         toast.error("Erro ao registrar chamado !")
@@ -259,12 +246,10 @@ export default function Dashboard() {
     setLoadingMore(true)
 
     if (selectedType !== "" && isAdmin === false) {
-      console.log(selectedType)
       const newDocs = await firebase.firestore().collection('tasks').orderBy('created', 'desc').where("client", "==", user.name)
         .where("type", "==", selectedType).limit('2').startAfter(lastTask).get()
       await loadTasks(newDocs)
     } else if (selectedType === "" && isAdmin === false) {
-      console.log(selectedType)
       const newDocs = await firebase.firestore().collection('tasks').orderBy('created', 'desc').where("client", "==", user.name)
         .limit('2').startAfter(lastTask).get()
       await loadTasks(newDocs)
@@ -336,20 +321,19 @@ export default function Dashboard() {
     loadTasks(filterDocs)
   }
 
-  async function orderBy(e){
+  async function orderBy(e) {
     setTasks('')
-    
-    if(e === 'concluded'){
+
+    if (e === 'concluded') {
       const order = 'created'
       const docs = await firebase.firestore().collection('tasks').orderBy(order, 'asc').get()
       await loadTasks(docs)
-    }else{
-      const order = e      
+    } else {
+      const order = e
       const docs = await firebase.firestore().collection('tasks').orderBy(order, 'asc').get()
       await loadTasks(docs)
     }
 
-    console.log(e)
   }
 
 
@@ -388,7 +372,7 @@ export default function Dashboard() {
                 <option>TI</option>
                 <option>Estrutura</option>
               </select>
-              
+
             </div>
             <div className="subject_select">
               <label>Assunto</label>
@@ -480,7 +464,7 @@ export default function Dashboard() {
             {loadingMore && <h3>Carregando...</h3>}
 
             {!loadingMore && !isEmpty && <button className="button-hover" onClick={moreTasks}>Carregar Mais</button>}
-            <button className="button-hover" onClick={(e)=> TasksReport(tasks)}>Imprimir</button>
+            <button className="button-hover" onClick={(e) => TasksReport(tasks)}>Imprimir</button>
 
           </div>
         }
@@ -541,7 +525,6 @@ export default function Modal({ tipo, close, item }) {
   const [newList, setNewList] = useState(item.obs)
   let fullDate = ''
   let obsList = item.obs
-  console.log(obsList)
 
   const [priority, setPriority] = useState(item.priority)
   const [prioritys, setPrioritys] = useState(['Baixa', 'Média', 'Alta'])
@@ -594,16 +577,14 @@ export default function Modal({ tipo, close, item }) {
   }, [])
 
 
-  useEffect(()=>{
-    const doc = firebase.firestore().collection('tasks').doc(item.id).onSnapshot((snapshot)=>{
-      snapshot.forEach((doc)=>{
-        console.log(doc.data())
+  useEffect(() => {
+    const doc = firebase.firestore().collection('tasks').doc(item.id).onSnapshot((snapshot) => {
+      snapshot.forEach((doc) => {
         listTasks.push(doc.data())
       })
-      console.log(listTasks)
       loadTask(listTasks)
     })
-  },[])
+  }, [])
 
   const save = data => {
     saveTask()
@@ -627,7 +608,6 @@ export default function Modal({ tipo, close, item }) {
 
   async function saveTask(e) {
 
-    console.log(priority)
 
 
     await firebase.firestore().collection('tasks').doc(item.id).update({
@@ -640,30 +620,25 @@ export default function Modal({ tipo, close, item }) {
     })
       .then(() => {
         toast.success("Edição realizada com sucesso !")
-        // sendEmail()
         close()
       })
       .catch((error) => {
         toast.error("Erro ao realizar edição !")
         console.log(error)
       })
-    // }
 
   }
 
   function saveObs(newObs) {
-  /*   obsList = item.obs */
-    console.log(obsList)
     setNewList('')
     const newOBS = {
       name: client,
       obs: newObs,
       date: fullDate
     }
-    
+
     obsList.push(newOBS)
     setNewList(obsList)
-    console.log(obsList)
   }
 
 
@@ -747,29 +722,29 @@ export default function Modal({ tipo, close, item }) {
             <label>Observações</label>
             {tipo === 'show' ?
               <div className="obs-list">
-                {obsList.map((o)=>{
-                  return(
-                <div className="obs">
-                  <label>{`${o.name} - ${o.date}`}</label>
-                  <textarea value={o.obs} name="obs" disabled={disable} placeholder="Observações" />
-                </div>
+                {obsList.map((o) => {
+                  return (
+                    <div className="obs">
+                      <label>{`${o.name} - ${o.date}`}</label>
+                      <textarea value={o.obs} name="obs" disabled={disable} placeholder="Observações" />
+                    </div>
                   )
                 })}
               </div>
               :
               <div className="new-obs">
                 <textarea value={obs} name="obs" {...register("obs")} onChange={(e) => setObs(e.target.value)} disabled={disable} placeholder="Observações" />
-                <button type="button" onClick={(()=>{saveObs(obs)})}>Enviar</button>
+                <button type="button" onClick={(() => { saveObs(obs) })}>Enviar</button>
                 <div className="obs-list">
-                {newList.map((o)=>{
-                  return(
-                <div className="obs">
-                  <label>{`${o.name} - ${o.date}`}</label>
-                  <textarea value={o.obs} name="obs" disabled='disable' placeholder="Observações" />
+                  {newList.map((o) => {
+                    return (
+                      <div className="obs">
+                        <label>{`${o.name} - ${o.date}`}</label>
+                        <textarea value={o.obs} name="obs" disabled='disable' placeholder="Observações" />
+                      </div>
+                    )
+                  })}
                 </div>
-                  )
-                })}
-              </div>
               </div>
             }
           </div>

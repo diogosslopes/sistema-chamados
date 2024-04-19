@@ -20,20 +20,20 @@ export default function TaskTypes() {
 
     const validation = yup.object().shape({
         taskType: yup.string().required("Nome é obrigatório")
-        
+
     })
 
     const { registerUser, baseURL } = useContext(AuthContext)
-    
-    const [taskType, setTaskType] = useState('') //tasktype
-    const [taskTypeId, setTaskTypeId] = useState('') //tasktype
-    const [taskTypeList, setTaskTypeList] = useState([]) //tasktype
+
+    const [taskType, setTaskType] = useState('')
+    const [taskTypeId, setTaskTypeId] = useState('')
+    const [taskTypeList, setTaskTypeList] = useState([])
     const [editing, setEditing] = useState()
     const [showModal, setShowModal] = useState()
     let list = []
 
     const elementForm = document.querySelector('.form-client')
-    
+
     const elementButton = document.querySelector('.new')
 
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -43,22 +43,20 @@ export default function TaskTypes() {
     const save = async value => {
 
 
-        console.log("Tipo" + taskType)
 
-        
-        if(editing === true){
+
+        if (editing === true) {
             Axios.put(`${baseURL}/editTaskType`, {
                 taskType: taskType,
                 id: taskTypeId
-            }).then(() =>{
+            }).then(() => {
                 toast.success('Edição realizada com sucesso')
                 setTaskType('')
             })
-            console.log(taskTypeId)
-        }else{
+        } else {
             Axios.post(`${baseURL}/registerTaskType`, {
                 taskType: taskType
-            }).then(() =>{
+            }).then(() => {
                 toast.success('Tipo de chamado cadastrado com sucesso')
                 setTaskType('')
             })
@@ -75,22 +73,21 @@ export default function TaskTypes() {
         async function loadTaskType() {
 
             await Axios.get(`${baseURL}/getTaskTypes`).then((response) => {
-                
+
                 response.data.forEach((doc) => {
                     list.push({
                         id: doc.id,
                         taskType: doc.taskType,
-                        
+
                     })
-                    
+
                 })
-                
-                setTaskTypeList(list)   
+
+                setTaskTypeList(list)
             })
-            
+
         }
         loadTaskType()
-        console.log(taskTypeList)
     }, [taskType, taskTypeId])
 
 
@@ -98,12 +95,9 @@ export default function TaskTypes() {
 
     function editingTaskType(c) {
 
-        console.log(c)
         setEditing(true)
         setTaskType(c.taskType)
         setTaskTypeId(c.id)
-        // showForm()
-        // toast.success("Editado com sucesso")
     }
 
     function deleteItem(id) {
@@ -112,7 +106,6 @@ export default function TaskTypes() {
     }
 
 
-    //--------------------------------------------------- MYSQL ---------------------------------------------------------------------------------------
 
 
     return (
@@ -132,7 +125,7 @@ export default function TaskTypes() {
 
                             <div className="buttons">
                                 <button type="submit">Salvar</button>
-                                <button type="button" onClick={() => {setTaskType("")}}>Limpar</button>
+                                <button type="button" onClick={() => { setTaskType("") }}>Limpar</button>
                             </div>
                         </div>
                         <article className="error-message">
@@ -153,7 +146,7 @@ export default function TaskTypes() {
                 })}
             </div>
             {showModal && (
-                <DeleteModal close={deleteItem} id={taskTypeId} bd={"taskTypes"}  />
+                <DeleteModal close={deleteItem} id={taskTypeId} bd={"taskTypes"} />
             )}
         </div>
     )

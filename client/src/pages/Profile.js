@@ -23,7 +23,7 @@ import { generateDownload } from "../components/cropImage";
 import { createRoot } from 'react-dom/client';
 import ImgCrop from 'antd-img-crop';
 import { Upload } from 'antd';
-import  Axios  from "axios";
+import Axios from "axios";
 
 const getSrcFromFile = (file) => {
     return new Promise((resolve) => {
@@ -36,32 +36,28 @@ const getSrcFromFile = (file) => {
 
 
 export default function Profile() {
-    
-    
+
+
 
     const [fileList, setFileList] = useState([]);
 
     const onload = ({ fileList: newFileList }) => {
-         setNewAvatar(fileList[0])
-         setFileList(newFileList);
-         console.log(fileList)
+        setNewAvatar(fileList[0])
+        setFileList(newFileList);
 
-       };
+    };
 
 
-   const onPreview = async (file) => {
+    const onPreview = async (file) => {
         const src = file.url || (await getSrcFromFile(file));
         const imgWindow = window.open(src);
-        
+
         if (imgWindow) {
-            console.log(fileList[0].type)
             const image = new Image();
             image.src = src;
             imgWindow.document.write(image.outerHTML);
-            console.log("AQUI!!!!!!!!!!!!!")
         } else {
             window.location.href = src;
-            console.log("AQUI 2!!!!!!!!!!!!!")
         }
     };
 
@@ -91,37 +87,28 @@ export default function Profile() {
 
 
     async function handleAvatar() {
-        
-        
-      
-        
+
+
+
+
         if (newAvatar === null && name !== '') {
-            console.log(user, name)
 
             Axios.post(`${baseURL}/updateUser`, {
                 clientId: user.id,
                 name: name
-            
+
             })
             let userData = {
                 ...user,
                 name: name
             }
-            // setUser(userData)
             storage(userData)
 
-            // await firebase.firestore().collection('users')
-            //     .doc(user.id)
-            //     .update({
-            //         name: name
-            //     })
-            //     .then(() => {
-            //         toast.success("Edição realizada com sucesso")
-            //     })
+
 
         } else if (name !== '' && newAvatar !== null) {
             upload()
-            }
+        }
 
 
         async function upload() {
@@ -135,29 +122,20 @@ export default function Profile() {
                         .child(newAvatar.name).getDownloadURL()
                         .then(async (url) => {
 
-                            // await firebase.firestore().collection('users')
-                            //     .doc(user.id)
-                            //     .update({
-                            //         avatar: newAvatar.thumbUrl,
-                            //         name: name
-                            //     })
-                            //     .then(() => {
-                            //     })
-                        })
-                        let userData = {
-                            ...user,
-                            avatar: newAvatar.thumbUrl,
-                            name: name
-                        }
 
-                        // setUser(userData)
-                        console.log(userData.id)
-                        storage(userData)
-
-                        Axios.post(`${baseURL}/updateAvatar`, {
-                            clientId: userData.id,
-                            avatar: userData.avatar
                         })
+                    let userData = {
+                        ...user,
+                        avatar: newAvatar.thumbUrl,
+                        name: name
+                    }
+
+                    storage(userData)
+
+                    Axios.post(`${baseURL}/updateAvatar`, {
+                        clientId: userData.id,
+                        avatar: userData.avatar
+                    })
                 })
         }
 

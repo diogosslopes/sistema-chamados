@@ -19,17 +19,14 @@ export default function DeleteModal({ id, close, bd, getDoc }) {
 
   const { getDocs, setTasks, baseURL } = useContext(AuthContext)
 
-  console.log(id)
-  console.log(bd)
+
 
   async function deleteItem() {
 
     if (bd === 'tasks') {
-      console.log(id)
       await Axios.delete(`${baseURL}/deleteobs/${id}`).then((response) => {
         Axios.delete(`${baseURL}/deletetask/${id}`).then((response) => {
           close()
-          console.log(response)
           toast.success("Deletado com sucesso")
           getDoc()
         }).catch((error) => {
@@ -39,38 +36,30 @@ export default function DeleteModal({ id, close, bd, getDoc }) {
       })
     } else if (bd === 'clients') {
       Axios.delete(`${baseURL}/deleteClient/${id}`).then((response) => {
-        console.log(response)
         toast.success("Deletado com sucesso")
         close()
       })
-      
+
     } else if (bd === 'taskTypes') {
-      console.log(id)
       Axios.delete(`${baseURL}/deleteTaskType/${id}`).then((response) => {
-        console.log(response)
         toast.success("Deletado com sucesso")
         close()
       })
 
     } else if (bd === 'status') {
-      console.log(id)
       Axios.delete(`${baseURL}/deleteStatus/${id}`).then((response) => {
-        console.log(response)
         toast.success("Deletado com sucesso")
         close()
       })
 
     } else if (bd === 'subject') {
-      console.log(id)
       Axios.delete(`${baseURL}/deleteSubject/${id}`).then((response) => {
-        console.log(response)
         toast.success("Deletado com sucesso")
         close()
       })
 
     }
 
-    console.log(id)
 
   }
 

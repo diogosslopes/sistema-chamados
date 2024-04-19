@@ -101,71 +101,66 @@ export default function Dashboard() {
   }, [])
 
 
-  useEffect(()=>{
+  useEffect(() => {
     async function loadStatus() {
 
       let listStatus = []
       let listSubject = []
       let taskTypeList = []
       await Axios.get(`${baseURL}/getStatus`).then((response) => {
-          
-          response.data.forEach((doc) => {
-            listStatus.push({
-                  id: doc.id,
-                  status: doc.status,
-                  
-              })
-              
+
+        response.data.forEach((doc) => {
+          listStatus.push({
+            id: doc.id,
+            status: doc.status,
+
           })
-          
-          setStatusList(listStatus)   
+
+        })
+
+        setStatusList(listStatus)
       })
 
       await Axios.get(`${baseURL}/getSubjects`).then((response) => {
         response.data.forEach((doc) => {
-            console.log(doc.subject)
-            listSubject.push({
-                id: doc.id,
-                subject: doc.subject,
-                taskType: doc.taskType
-            })
+          listSubject.push({
+            id: doc.id,
+            subject: doc.subject,
+            taskType: doc.taskType
+          })
 
         })
 
         setSubjectList(listSubject)
-    })
-
-    await Axios.get(`${baseURL}/getTaskTypes`).then((response) => {
-                
-      response.data.forEach((doc) => {
-        taskTypeList.push({
-              id: doc.id,
-              taskType: doc.taskType,
-              
-          })
-          
       })
-      
-      setTaskTypeList(taskTypeList)   
-  })
-      
-  }
-  loadStatus()
-  console.log(statusList)
+
+      await Axios.get(`${baseURL}/getTaskTypes`).then((response) => {
+
+        response.data.forEach((doc) => {
+          taskTypeList.push({
+            id: doc.id,
+            taskType: doc.taskType,
+
+          })
+
+        })
+
+        setTaskTypeList(taskTypeList)
+      })
+
+    }
+    loadStatus()
   }, [])
 
   async function getDocs() {
 
     setTasks([])
     await Axios.get(`${baseURL}/getObsList`).then((response) => {
-      // loadTasks(response.data)
       newObsList = response.data
       Axios.get(`${baseURL}/getTasks`).then((response) => {
-        
-        // loadTasks(response.data)
+
         newTasks = response.data
-        // loadTasks(newTasks, newObsList)
-        
+
         if (user.group === "admin") {
           loadTasks(newTasks, newObsList)
 
@@ -187,7 +182,7 @@ export default function Dashboard() {
     if (docs.length < 2) {
       setIsEmpty(true)
     }
-    
+
     const isTaksEmpty = docs.length === 0
 
     if (!isTaksEmpty) {
@@ -216,8 +211,6 @@ export default function Dashboard() {
       setTasks(tasks => [...tasks, ...list])
       setLoading(false)
 
-      console.log(lastTask)
-      console.log(firstTask)
 
     } else {
       setIsEmpty(true)
@@ -272,7 +265,6 @@ export default function Dashboard() {
       created: created,
       obs: obs,
       userId: user.id,
-      // taskImages: taskImagesList,
       userEmail: user.email
     })
 
@@ -285,7 +277,6 @@ export default function Dashboard() {
       created: created,
       obs: obs,
       userId: user.id,
-      // taskImages: taskImagesList,
       userEmail: user.email
     }).then(async () => {
       await Axios.post(`${baseURL}/searchtask`, {
@@ -295,7 +286,6 @@ export default function Dashboard() {
         userEmail: user.email,
         userId: user.id
       }).then((response) => {
-        console.log(response)
         saveObs(response.data[0])
         saveImages(response.data[0], taskImagesList)
         const newObs = {
@@ -334,7 +324,7 @@ export default function Dashboard() {
 
     toast.success("Chamado registrado !")
     setTasks('')
-    // saveImages(images)
+
     closeForm()
     getDocs()
     sendEmail()
@@ -383,7 +373,6 @@ export default function Dashboard() {
 
     setLoadingMore(true)
 
-    console.log(firstTask)
 
     await Axios.get(`${baseURL}/getObsList`).then((response) => {
       newObsList = response.data
@@ -466,7 +455,6 @@ export default function Dashboard() {
     }
 
 
-    // loadTasks(filterDocs, newObsList)
   }
 
   async function orderBy(e) {
@@ -512,14 +500,11 @@ export default function Dashboard() {
 
   }
 
-  function handleSubjects(value){
+  function handleSubjects(value) {
     setTaskType(value)
-    console.log(subjectList)
-    console.log(value)
 
-    setSubjects(subjectList.filter((s)=> s.taskType === value))
+    setSubjects(subjectList.filter((s) => s.taskType === value))
 
-    // console.log(lista)
   }
 
 

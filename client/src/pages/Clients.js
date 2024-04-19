@@ -49,7 +49,6 @@ export default function Clients() {
 
 
         if (editing === true) {
-            console.log(clientId)
             await Axios.put(`${baseURL}/editClient`, {
                 clientId: clientId,
                 name: name,
@@ -69,7 +68,6 @@ export default function Clients() {
 
             registerUser(newClient)
             showForm()
-            console.log(newClient)
         }
 
 
@@ -83,7 +81,6 @@ export default function Clients() {
 
             await Axios.get(`${baseURL}/getUsers`).then((response) => {
                 let list = []
-                console.log(response.data)
                 response.data.forEach((doc) => {
                     list.push({
                         id: doc.clientId,
@@ -119,24 +116,20 @@ export default function Clients() {
 
     function editingClient(c) {
 
-        console.log(c)
         setEditing(true)
         setName(c.name)
         setAdress(c.adress)
         setLogin(c.email)
         setClientId(c.id)
         showForm()
-        // toast.success("Editado com sucesso")
     }
 
     function deleteItem(id) {
         setShowModal(!showModal)
-        console.log(id)
         setUnitId(id)
     }
 
 
-    //--------------------------------------------------- MYSQL ---------------------------------------------------------------------------------------
 
 
     return (

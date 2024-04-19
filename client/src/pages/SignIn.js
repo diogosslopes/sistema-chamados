@@ -16,11 +16,11 @@ function SignIn() {
   const { logIn, loadingAuth, user } = useContext(AuthContext)
   const navigate = useNavigate()
 
-  useEffect(()=>{
-    if (user){
+  useEffect(() => {
+    if (user) {
       navigate('/dashboard')
-  }
-  },[user])
+    }
+  }, [user])
 
   const validationLogin = yup.object().shape({
     login: yup.string().email("Digite um email válido").required("Digite seu email"),

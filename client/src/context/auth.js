@@ -45,7 +45,6 @@ function AuthProvider({ children }) {
     const [stats, setStats] = useState(['Criado', 'Aberto', 'Em andamento', 'Enviado p/ tec', 'Aguardando liberação', 'Fechado'])
     const [disable, setDisable] = useState(true)
     const [images, setImages] = useState([])
-    // const [emailToken, setEmailToken] = useState()
     let filterDocs = ""
 
     const navigate = useNavigate()
@@ -101,7 +100,6 @@ function AuthProvider({ children }) {
 
 
         setLoadingAuth(true)
-        // const emailToken = Math.random(1)
 
         await Axios.post(`${baseURL}/registeruser`, {
             email: value.login,
@@ -124,7 +122,6 @@ function AuthProvider({ children }) {
                 group: null
             }
             toast.success("Cadastrado com sucesso!")
-            // storage(userData)
             setUser(userData)
             setLoadingAuth(false)
             setLoggedIn(true)
@@ -236,7 +233,6 @@ function AuthProvider({ children }) {
     }
 
     async function signOut() {
-        // await firebase.auth().signOut()
         localStorage.removeItem('activeUser')
         setUser(null)
     }

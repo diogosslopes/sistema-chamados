@@ -42,7 +42,7 @@ export default function Sidebar() {
                                 <FiUsers />
                                 Unidades
                             </Link>
-                            <Link  to='#'>
+                            <Link to='#'>
                                 <FiFileText />
                                 Relatorios
                             </Link>

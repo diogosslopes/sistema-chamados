@@ -7,49 +7,19 @@ import Dashboard from '../pages/Dashboard';
 
 
 
-const PrivateRoutes = ({children}) =>{
+const PrivateRoutes = ({ children }) => {
 
-const { user, signed } = useContext(AuthContext)
-
-
+    const { user, signed } = useContext(AuthContext)
 
 
-return(
-    signed ? children  : <Navigate raplace to="/" />
-)
 
 
-} 
+    return (
+        signed ? children : <Navigate raplace to="/" />
+    )
+
+
+}
 
 export default PrivateRoutes
 
-// {
-  
-
-//   if(loading){
-//     return(
-//       <div></div>
-//     )
-//   }
-
-//  console.log(loggedIn)
-//   if(!signed && isPrivate){
-//     return <Route to="/" />
-//   }
-
-//   if(signed && !isPrivate){
-//     return <Route to="/dashboard" />
-//   }
-
-
-
-
-//   return(
-//     <Route
-//       {...rest}
-//       render={ props => (
-//         <Component {...props} />
-//       )}
-//     />
-//   )
-// }

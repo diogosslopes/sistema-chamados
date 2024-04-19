@@ -29,15 +29,15 @@ function ConfirmEmail() {
   const handleLogin = async (value) => {
     const templateParams = {
       email: value.email
-  }
-  
+    }
 
-  emailjs.send("service_g9rl1tf", "template_8ng1o8m", templateParams, "mBCqpYRtx6G_wfeFI")
+
+    emailjs.send("service_g9rl1tf", "template_8ng1o8m", templateParams, "mBCqpYRtx6G_wfeFI")
       .then((response) => {
-          console.log("Email enviado ", response.status, response.text)
+        console.log("Email enviado ", response.status, response.text)
       })
-}
-  
+  }
+
 
 
 

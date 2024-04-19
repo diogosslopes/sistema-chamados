@@ -28,14 +28,14 @@ function ChangePassword() {
   })
 
   const handleLogin = (value) => {
-    if(value.password === value.passwordConfirmation){
+    if (value.password === value.passwordConfirmation) {
       Axios.post(`${baseURL}/changePassword`, {
         email: email,
         password: value.password
       })
       toast.success("Senha alterada com sucesso!")
       navigate('/')
-    }else{
+    } else {
       toast.warn("As senhas devem ser iguais")
     }
   }
@@ -56,7 +56,7 @@ function ChangePassword() {
           <p>{errors.passwordConfirmation?.message}</p>
           <button type="submit">{loadingAuth ? 'Carregando...' : 'Alterar senha'}</button>
         </form>
-        
+
       </div>
     </div>
   );

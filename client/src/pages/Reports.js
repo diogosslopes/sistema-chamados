@@ -78,12 +78,10 @@ export default function Reports() {
     setLoadingMore(true)
 
     if (selectedType !== "" && isAdmin === false) {
-      console.log(selectedType)
       const newDocs = await firebase.firestore().collection('tasks').orderBy('created', 'desc').where("client", "==", user.name)
         .where("type", "==", selectedType).limit('2').startAfter(lastTask).get()
       await loadTasks(newDocs)
     } else if (selectedType === "" && isAdmin === false) {
-      console.log(selectedType)
       const newDocs = await firebase.firestore().collection('tasks').orderBy('created', 'desc').where("client", "==", user.name)
         .limit('2').startAfter(lastTask).get()
       await loadTasks(newDocs)
@@ -139,14 +137,13 @@ export default function Reports() {
   async function filter(value, name) {
 
 
-    console.log(value, name)
     setTasks('')
     const docs = await firebase.firestore().collection('tasks').orderBy('created', 'asc').where(name, "==", value).get()
     await loadTasks(docs)
 
   }
 
-  async function orderBy(e){
+  async function orderBy(e) {
     const order = e.target.value
 
     setTasks('')
@@ -190,7 +187,7 @@ export default function Reports() {
                 <option>TI</option>
                 <option>Estrutura</option>
               </select>
-              
+
             </div>
             <div className="subject_select">
               <label>Assunto</label>
@@ -253,9 +250,9 @@ export default function Reports() {
           :
           <div>
             <div className="new-task more-task">
-              
+
               <div className="filter-select">
-               <button className="new" onClick={showForm}>Filtros</button>
+                <button className="new" onClick={showForm}>Filtros</button>
               </div>
             </div>
             <TasksTable tasks={tasks} />

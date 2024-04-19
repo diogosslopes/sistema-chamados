@@ -1,4 +1,3 @@
-// import index from '../index.css'
 import loading from "./loading.svg"
 
 

@@ -71,26 +71,26 @@ const ImageCropTool = ({
           onZoomChange={onZoomChange}
           onCropComplete={onCropComplete}
         />
-      <div className="controls">
-        <div className="controls-upper-area">
-          <input
-            type="range"
-            min={1}
-            max={3}
-            step={0.1}
-            value={zoom}
-            onInput={(e) => {
-              onZoomChange(e.target.value);
-            }}
-            className="slider"
-          ></input>
+        <div className="controls">
+          <div className="controls-upper-area">
+            <input
+              type="range"
+              min={1}
+              max={3}
+              step={0.1}
+              value={zoom}
+              onInput={(e) => {
+                onZoomChange(e.target.value);
+              }}
+              className="slider"
+            ></input>
+          </div>
+          <div className="button-area">
+            <button onClick={onCancel}>Cancel</button>
+            <button onClick={onResetImage}>Reset</button>
+            <button onClick={onCrop}>Crop</button>
+          </div>
         </div>
-        <div className="button-area">
-          <button onClick={onCancel}>Cancel</button>
-          <button onClick={onResetImage}>Reset</button>
-          <button onClick={onCrop}>Crop</button>
-        </div>
-      </div>
       </div>
     </div>
   );

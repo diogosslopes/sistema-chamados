@@ -31,43 +31,12 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
 
 
 
-    async function saveTask(task) {
-
-        // const fullDate = format(new Date(), "dd/MM/yyyy HH:mm")
-        // setConcluded(fullDate)
-
-
-        // await firebase.firestore().collection('completedtasks').doc().set({
-        //   client: task.client,
-        //   subject: task.subject,
-        //   priority: task.priority,
-        //   status: task.status,
-        //   type: task.type,
-        //   created: task.created,
-        //   concluded: fullDate,
-        //   obs: task.obs,
-        //   userId: user.id,
-        //   taskImages: task.taskImages
-        // })
-        //   .then(() => {
-        //     toast.success("Chamado registrado !")
-        //     getDoc()
-
-        //   })
-        //   .catch((error) => {
-        //     toast.error("Erro ao registrar chamado !")
-        //     console.log(error)
-        // })
-
-
-    }
-
 
     function editClient(t, item) {
         setType(t)
         setShowModal(!showModal)
         if (showModal) {
-            
+
         }
         if (t === 'edit') {
             setTask(item)
@@ -89,7 +58,7 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
         const fullDate = format(new Date(), "dd/MM/yyyy HH:mm")
         setConcluded(fullDate)
 
-      await  Axios.post(`${baseURL}/completeTask`, {
+        await Axios.post(`${baseURL}/completeTask`, {
             client: task.client,
             subject: task.subject,
             priority: task.priority,
@@ -99,13 +68,12 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
             concluded: fullDate,
             obs: task.obs,
             userId: task.clientId,
-            // taskImages: taskImages,
             userEmail: task.userEmail,
             taskId: task.taskId
         }).then(() => {
-            Axios.put(`${baseURL}/editTaskConcluded`,{
+            Axios.put(`${baseURL}/editTaskConcluded`, {
                 taskId: task.taskId
-            })            
+            })
             toast.success("Chamado finalizado!")
         })
 

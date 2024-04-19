@@ -25,11 +25,11 @@ export default function Subjects() {
 
     const { baseURL } = useContext(AuthContext)
 
-    const [taskType, setTaskType] = useState('') //tasktype
-    const [taskTypeList, setTaskTypeList] = useState([]) //tasktype
+    const [taskType, setTaskType] = useState('')
+    const [taskTypeList, setTaskTypeList] = useState([])
     const [subject, setSubject] = useState()
     const [subjectList, setSubjectList] = useState([])
-    const [subjectId, setSubjectId] = useState('') //tasktype
+    const [subjectId, setSubjectId] = useState('')
     const [editing, setEditing] = useState()
     const [showModal, setShowModal] = useState()
     let listTasks = []
@@ -53,12 +53,11 @@ export default function Subjects() {
                         taskType: doc.taskType
 
                     })
-                    console.log(listTasks)
                 })
 
                 setTaskTypeList(listTasks)
             })
-     
+
 
         }
         loadTaskType()
@@ -71,7 +70,6 @@ export default function Subjects() {
 
             await Axios.get(`${baseURL}/getSubjects`).then((response) => {
                 response.data.forEach((doc) => {
-                    console.log(doc.subject)
                     listSubject.push({
                         id: doc.id,
                         subject: doc.subject,
@@ -79,13 +77,12 @@ export default function Subjects() {
                     })
 
                 })
-                
+
                 setSubjectList(listSubject)
             })
 
 
         }
-        console.log(subjectList)
         loadSubjects()
     }, [subject, subjectId])
 
@@ -93,7 +90,6 @@ export default function Subjects() {
 
     const save = async value => {
 
-        console.log("Tipo" + subject)
 
         if (editing === true) {
             Axios.put(`${baseURL}/editSubject`, {
@@ -106,7 +102,6 @@ export default function Subjects() {
                 setTaskType('')
                 setEditing(false)
             })
-            console.log(subjectId)
         } else {
             Axios.post(`${baseURL}/registerSubject`, {
                 subject: subject,
@@ -131,13 +126,10 @@ export default function Subjects() {
 
     function editingTaskType(c) {
 
-        console.log(c)
         setEditing(true)
         setSubject(c.subject)
         setSubjectId(c.id)
         setTaskType(c.taskType)
-        // showForm()
-        // toast.success("Editado com sucesso")
     }
 
     function deleteItem(id) {
@@ -146,7 +138,6 @@ export default function Subjects() {
     }
 
 
-    //--------------------------------------------------- MYSQL ---------------------------------------------------------------------------------------
 
 
     return (

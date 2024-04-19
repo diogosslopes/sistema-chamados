@@ -39,7 +39,7 @@ export default function Modal({ tipo, close, item, getDoc }) {
   const [disable, setDisable] = useState(false)
   let fullDate = ''
   const [obsList, setObsList] = useState([])
-  const [ isObsOk, setIsObsOk] = useState(true)
+  const [isObsOk, setIsObsOk] = useState(true)
 
   const [priority, setPriority] = useState(item.priority)
   const [prioritys, setPrioritys] = useState(['Baixa', 'Média', 'Alta'])
@@ -70,7 +70,7 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
     async function loadClients() {
 
-      Axios.get(`${baseURL}/getUsers`).then((response)=>{
+      Axios.get(`${baseURL}/getUsers`).then((response) => {
         let list = []
         setClients(response.data)
 
@@ -94,22 +94,22 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
   }, [])
 
-  useEffect(()=>{
-    
-    Axios.post(`${baseURL}/searchObs`,{
+  useEffect(() => {
+
+    Axios.post(`${baseURL}/searchObs`, {
       taskid: item.taskId
-    }).then((response)=>{
+    }).then((response) => {
       setObsList(response.data)
     })
 
-    Axios.post(`${baseURL}/searchImages`,{
+    Axios.post(`${baseURL}/searchImages`, {
       taskid: item.taskId
-    }).then((response)=>{
+    }).then((response) => {
       setTaskImages(response.data)
     })
 
 
-  },[])
+  }, [])
 
 
 
@@ -140,40 +140,37 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
   async function saveTask(e) {
 
-    console.log(client)
 
 
-    Axios.put(`${baseURL}/editTask`,{
+    Axios.put(`${baseURL}/editTask`, {
       taskId: item.taskId,
       userId: client,
-      client: client, 
-      priority: priority, 
-      subject: subject, 
-      status: status, 
+      client: client,
+      priority: priority,
+      subject: subject,
+      status: status,
       type: taskType
-    }).then(()=>{
+    }).then(() => {
       close()
       getDoc()
       sendEmail()
       toast.success("Edição realizada!")
     })
 
-    
+
 
   }
 
   function saveObs(newObs) {
 
-    if(newObs.length < 11){
+    if (newObs.length < 11) {
       setIsObsOk(false)
       return
-    } else{
+    } else {
       setIsObsOk(true)
     }
 
-    console.log(item)
     fullDate = format(new Date(), "dd/MM/yyyy HH:mm")
-    // setNewList('')
     const newOBS = {
       client: user.name,
       obs: newObs,
@@ -186,16 +183,16 @@ export default function Modal({ tipo, close, item, getDoc }) {
       newOBS
     ])
 
-   
 
-  
+
+
 
     Axios.post(`${baseURL}/registerobs`, {
       client: newOBS.client,
       created: newOBS.created,
       obs: newOBS.obs,
       taskid: newOBS.taskid
-    }).then(()=>{
+    }).then(() => {
       setObs("")
       toast.success("Observação salva")
       sendEmail()
@@ -205,22 +202,19 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
   }
 
-  function handleClient (e){
-    console.log(e)
+  function handleClient(e) {
 
     setClient(e.target.value)
-    
+
     const clientId = document.querySelector(".clientOption")
-    console.log(clientId)
   }
-  
-  function handleSelect (e){
-    console.log(e)
-    
+
+  function handleSelect(e) {
+
 
   }
 
- 
+
 
 
 
@@ -231,7 +225,7 @@ export default function Modal({ tipo, close, item, getDoc }) {
         <form onSubmit={handleSubmit(saveTask)} className="form-modal" >
           <div>
             <label>Cliente</label>
-            <select disabled="disable" name="client" {...register("client")} onSelect={(e)=> handleSelect(e)} value={client} onChange={(e) => handleClient(e) } >
+            <select disabled="disable" name="client" {...register("client")} onSelect={(e) => handleSelect(e)} value={client} onChange={(e) => handleClient(e)} >
               <option hidden value={''}>Selecione a unidade</option>
 
               {clients.map((c, index) => {
@@ -291,10 +285,10 @@ export default function Modal({ tipo, close, item, getDoc }) {
             <label>Anexos</label>
             {/* <a target="_blank" href={`${taskImages}`}>{`Imagem `}</a> */}
             <div className="list">
-              {                
-                taskImages.map((i, index)=>{
+              {
+                taskImages.map((i, index) => {
                   return (
-                    <a target="_blank" key={i.id} href={`${i.image}`}>{`Imagem ${index +1}`}</a>
+                    <a target="_blank" key={i.id} href={`${i.image}`}>{`Imagem ${index + 1}`}</a>
                   )
                 })
               }
