@@ -6,9 +6,10 @@ import pdfFonts from 'pdfmake/build/vfs_fonts'
 function TasksReport(tasks) {
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs
+    console.log(tasks)
 
-    
-    
+
+
     const reportTitle = [{
         text: 'Chamados em aberto',
         fontSize: 15,
@@ -20,10 +21,11 @@ function TasksReport(tasks) {
     const datas = tasks.map((task) => {
         return (
             [
+                { text: task.taskId, fontSize: 9 },
                 { text: task.client, fontSize: 9 },
                 { text: task.subject, fontSize: 9, alignment: 'justify' },
                 { text: task.obs[0].obs, fontSize: 9, alignment: 'justify' },
-                { text: task.created, fontSize: 9},
+                { text: task.created, fontSize: 9 },
 
             ]
         )
@@ -34,17 +36,20 @@ function TasksReport(tasks) {
         {
             table: {
                 headerRows: 1,
-                widths: ['*', '*', 280, '*'],
+                widths: [25, '*', 50, 250, 75],
                 body: [
                     [
-                        { text: 'Unidade', style: 'tableHeader' }, { text: 'Assunto', style: 'tableHeader' },
-                        { text: 'Descrição', style: 'tableHeader' }, { text: 'Data', style: 'tableHeader' }
+                        { text: 'ID', style: 'tableHeader' },
+                        { text: 'Unidade', style: 'tableHeader' },
+                        { text: 'Assunto', style: 'tableHeader' },
+                        { text: 'Descrição', style: 'tableHeader' },
+                        { text: 'Data', style: 'tableHeader' }
                     ],
                     ...datas
-
-
+                    
+                    
                 ]
-
+                
             },
             layout: 'lightHorizontalLines'
         }
