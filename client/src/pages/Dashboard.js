@@ -204,7 +204,6 @@ export default function Dashboard() {
         obsList = []
       })
 
-
       const lastDoc = docs[docs.length - 1]
       setLastTask(lastDoc)
       setFirstTask(docs[0])
@@ -434,22 +433,27 @@ export default function Dashboard() {
     setSelectedType(e.target.value)
     let filterDocs = ""
 
+
     if (user.group === "admin") {
       await Axios.get(`${baseURL}/getTasks`).then((response) => {
-        setIsEmpty(false)
-        setLoadingMore(false)
-        const tasksDocs = response.data.filter((t) => t.type === e.target.value)
-        loadTasks(tasksDocs, newObsList)
+        Axios.get(`${baseURL}/getObsList`).then((responseOBS)=>{
+
+          setIsEmpty(false)
+          setLoadingMore(false)
+          const tasksDocs = response.data.filter((t) => t.type === e.target.value)
+          loadTasks(tasksDocs, responseOBS.data)
+        })
       })
     } else {
       await Axios.get(`${baseURL}/getTasks`).then((response) => {
-        const tasksDocs = response.data.filter((t) => t.type === e.target.value && user.email === t.userEmail)
-        const obsDocs = newObsList.filter((o) => user.name === o.client)
-        setIsEmpty(false)
-        setLoadingMore(false)
-        loadTasks(tasksDocs, obsDocs)
+        Axios.get(`${baseURL}/getObsList`).then((responseOBS)=>{
+        
+          const tasksDocs = response.data.filter((t) => t.type === e.target.value && user.email === t.userEmail)
+          setIsEmpty(false)
+          setLoadingMore(false)
+          loadTasks(tasksDocs, responseOBS.data)
+        })
       })
-
 
 
     }

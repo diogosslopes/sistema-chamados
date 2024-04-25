@@ -31,7 +31,7 @@ export default function Sidebar() {
                     <FiCheckSquare />
                     Chamados Concluidos
                 </Link>
-                {user.group === "admin" ?
+                {user.group === "admin" ? 
                     <>
                         <Link onClick={() => document.querySelector('.class').classList.toggle('setting-options-show')} id='settings' to=''>
                             <FiSettings />
