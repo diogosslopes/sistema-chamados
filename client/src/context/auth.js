@@ -85,8 +85,9 @@ function AuthProvider({ children }) {
     }
 
 
-    const baseURL = "https://servidor-teste-mauve.vercel.app"
-    // const baseURL = "http://localhost:3002"
+    const baseURL = "https://server-three-navy.vercel.app"
+    // const baseURL = "http://localhost:3001"
+
 
     async function registerUser(value) {
 
