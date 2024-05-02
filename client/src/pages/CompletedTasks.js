@@ -17,6 +17,7 @@ import { format } from 'date-fns'
 import emailjs from '@emailjs/browser'
 import Axios from "axios";
 import Loading from "../components/Loading.js";
+import moment from "moment";
 
 
 const validation = yup.object().shape({
@@ -115,11 +116,13 @@ export default function CompletedTasks() {
     if (!isTaksEmpty) {
       docs.forEach((doc) => {
         obsList = obs.filter((o) => doc.taskId === o.taskid)
+        const formatedDate = moment.utc(doc.created).format('DD/MM/YYYY HH:mm:ss')
+        const formatedConcludedDate = moment.utc(doc.concluded).format('DD/MM/YYYY HH:mm:ss')
         list.push({
           id: doc.id,
           client: doc.client,
-          created: doc.created,
-          concluded: doc.concluded,
+          created: formatedDate,
+          concluded: formatedConcludedDate,
           obs: obsList,
           priority: doc.priority,
           status: doc.status,

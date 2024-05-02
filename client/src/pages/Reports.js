@@ -15,6 +15,7 @@ import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 import { format } from 'date-fns'
 import emailjs from '@emailjs/browser'
+import { ButtonGroup } from "@mui/material";
 
 
 const validation = yup.object().shape({
@@ -26,6 +27,22 @@ const validation = yup.object().shape({
 export default function Reports() {
 
 
+
+  // const [newTask, setNewTask] = useState({})
+  // const [client, setClient] = useState(user.name)
+  // const [priority, setPriority] = useState('')
+  // const [subject, setSubject] = useState('')
+  // const [taskType, setTaskType] = useState(['TI', 'Estrutura'])
+  // const [selectedType, setSelectedType] = useState('')
+  // const [status, setStatus] = useState('')
+  // const [created, setCreated] = useState()
+  // const [concluded, setConcluded] = useState('')
+  // const [obs, setObs] = useState()
+  // const [prioritys, setPrioritys] = useState(['Baixa', 'Média', 'Alta'])
+  // const [subjects, setSubjects] = useState(['Impressora', 'Sistema', 'Internet', 'Eletrica', 'Pintura', 'Ar Condicionado', 'Hidraulico', 'Portas', 'Outros'])
+  // const [stats, setStats] = useState(['Criado', 'Aberto', 'Em andamento', 'Enviado p/ tec', 'Aguardando liberação', 'Fechado'])
+  // const [disable, setDisable] = useState(true)
+  // const [images, setImages] = useState([])
 
   return (
     <div className="rigth-container">

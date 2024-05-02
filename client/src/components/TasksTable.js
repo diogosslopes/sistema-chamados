@@ -55,27 +55,30 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
     async function completeTask(task) {
 
 
-        const fullDate = format(new Date(), "dd/MM/yyyy HH:mm")
+        const fullDate = format(new Date(), "yyyy-MM-dd HH:mm:ss")
         setConcluded(fullDate)
-
-        await Axios.post(`${baseURL}/completeTask`, {
-            client: task.client,
-            subject: task.subject,
-            priority: task.priority,
-            status: task.status,
-            type: task.type,
-            created: task.created,
-            concluded: fullDate,
-            obs: task.obs,
-            userId: task.clientId,
-            userEmail: task.userEmail,
-            taskId: task.taskId
-        }).then(() => {
-            Axios.put(`${baseURL}/editTaskConcluded`, {
-                taskId: task.taskId
-            })
+        
+       await Axios.put(`${baseURL}/editTaskConcluded`, {
+            taskId: task.taskId,
+            concluded: fullDate
+        }).then(()=>{
             toast.success("Chamado finalizado!")
         })
+        
+        // await Axios.post(`${baseURL}/completeTask`, {
+        //     client: task.client,
+        //     subject: task.subject,
+        //     priority: task.priority,
+        //     status: task.status,
+        //     type: task.type,
+        //     created: task.created,
+        //     concluded: fullDate,
+        //     obs: task.obs,
+        //     userId: task.clientId,
+        //     userEmail: task.userEmail,
+        //     taskId: task.taskId
+        // }).then(() => {
+        // })
 
 
     }

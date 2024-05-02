@@ -13,11 +13,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from "yup"
 import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
-import { format } from 'date-fns'
+import { format, formatISO9075, parseISO } from 'date-fns'
 import emailjs from '@emailjs/browser'
 import TasksReport from "../documents/TasksReport";
 import Axios from "axios";
 import Loading from "../components/Loading.js";
+import moment from "moment";
 
 
 const validation = yup.object().shape({
@@ -188,10 +189,14 @@ export default function Dashboard() {
     if (!isTaksEmpty) {
       docs.forEach((doc) => {
         obsList = obs.filter((o) => doc.taskId === o.taskid)
+        // const formatedDate = formatISO9075(parseISO(doc.created), "MM-dd-yyyy HH:mm")
+        const formatedDate = moment.utc(doc.created).format('DD/MM/YYYY HH:mm:ss')
+        console.log(doc)
+        console.log(formatedDate)
         list.push({
           taskId: doc.taskId,
           client: doc.client,
-          created: doc.created,
+          created: formatedDate,
           obs: obsList,
           priority: doc.priority,
           status: doc.status,
@@ -407,7 +412,10 @@ export default function Dashboard() {
 
   function showForm(e) {
     e.preventDefault()
-    const fullDate = format(new Date(), "dd/MM/yyyy HH:mm")
+    const fullDate = format(new Date(), "yyyy-MM-dd HH:mm:ss")
+    // const fullDate = new Date(1,4,24)
+    //  format(new Date(), "dd/MM/yyyy HH:mm")
+    console.log(fullDate)
     setCreated(fullDate)
 
     document.querySelector('.form-task').classList.toggle('show-form-task')
