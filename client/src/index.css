@@ -1030,6 +1030,9 @@ th {
   align-items: center;
 }
 
+.hide-column{
+  display: none;
+}
 
 
 @media screen and (max-width: 700px) {

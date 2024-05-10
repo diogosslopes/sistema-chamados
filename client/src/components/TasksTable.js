@@ -28,9 +28,15 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
     const [showModal, setShowModal] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [newTask, setNewTask] = useState()
+    const [hide, setHide] = useState()
 
 
-
+    useEffect(() => {
+        if (page === 'report') {
+            setHide('hide-column')
+        }
+        console.log(page)
+    }, [])
 
     function editClient(t, item) {
         setType(t)
@@ -57,14 +63,14 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
 
         const fullDate = format(new Date(), "yyyy-MM-dd HH:mm:ss")
         setConcluded(fullDate)
-        
-       await Axios.put(`${baseURL}/editTaskConcluded`, {
+
+        await Axios.put(`${baseURL}/editTaskConcluded`, {
             taskId: task.taskId,
             concluded: fullDate
-        }).then(()=>{
+        }).then(() => {
             toast.success("Chamado finalizado!")
         })
-        
+
         // await Axios.post(`${baseURL}/completeTask`, {
         //     client: task.client,
         //     subject: task.subject,
@@ -97,7 +103,7 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
                         {page === 'completedtasks' &&
                             <th scope="col" onClick={() => order('concluded', 'completedtask')}>Concluido em</th>
                         }
-                        <th scope="col">#</th>
+                        <th scope="col" className={hide} >#</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -113,18 +119,18 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
                                 {page === 'completedtasks' &&
                                     <td data-label="Concluido em">{task.concluded}</td>
                                 }
-                                <td data-label="#">
+                                <td data-label="#" className={hide}>
                                     {page === 'completedtasks' ?
                                         <button className="task-btn search" onClick={() => editClient('show', task)}><FiSearch size={17} /></button>
                                         :
-                                        <>
-                                            <button className="task-btn search" onClick={() => editClient('show', task)}><FiSearch size={17} /></button>
+                                        <div >
+                                            <button className="task-btn search"  onClick={() => editClient('show', task)}><FiSearch size={17} /></button>
                                             <button className="task-btn edit" onClick={() => editClient('edit', task)}><FiEdit2 size={17} /></button>
                                             {user.group === 'admin' && (
                                                 <button className="task-btn check" onClick={() => completeTask(task)}><FiCheck size={17} /></button>
                                             )}
                                             <button className="task-btn delete" onClick={() => deleteTask(task.taskId)}><FiTrash size={17} /></button>
-                                        </>
+                                        </div>
 
                                     }
                                 </td>

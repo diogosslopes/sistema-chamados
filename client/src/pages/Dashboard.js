@@ -166,9 +166,14 @@ export default function Dashboard() {
           loadTasks(newTasks, newObsList)
 
         } else {
-          const tasksDocs = newTasks.filter((t) => user.email === t.userEmail)
-          const obsDocs = newObsList.filter((o) => user.name === o.client)
-          loadTasks(tasksDocs, obsDocs)
+          Axios.post(`${baseURL}/getUnitsTasks`,{
+            userId: user.id 
+          }).then((response)=>{
+            newTasks = response.data
+            const tasksDocs = newTasks.filter((t) => user.email === t.userEmail)
+            const obsDocs = newObsList.filter((o) => user.name === o.client)
+            loadTasks(tasksDocs, obsDocs)
+          })
 
 
         }
@@ -343,7 +348,9 @@ export default function Dashboard() {
     await Axios.get(`${baseURL}/getObsList`).then((response) => {
       newObsList = response.data
       Axios.post(`${baseURL}/getNextTasks`, {
-        taskId: lastTask.taskId
+        taskId: lastTask.taskId,
+        userGroup: user.group,
+        userId: user.id,
       }).then((response) => {
         newTasks = response.data
 
@@ -381,7 +388,9 @@ export default function Dashboard() {
     await Axios.get(`${baseURL}/getObsList`).then((response) => {
       newObsList = response.data
       Axios.post(`${baseURL}/getPreviousTasks`, {
-        taskId: firstTask.taskId
+        taskId: firstTask.taskId,        
+        userGroup: user.group,
+        userId: user.id,
       }).then((response) => {
         newTasks = response.data
 

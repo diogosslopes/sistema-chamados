@@ -159,7 +159,9 @@ export default function CompletedTasks() {
     await Axios.get(`${baseURL}/getObsList`).then((response) => {
       newObsList = response.data
       Axios.post(`${baseURL}/getNextCompletedTasks`, {
-        taskId: lastTask.taskId
+        taskId: lastTask.taskId,        
+        userGroup: user.group,
+        userId: user.id,
       }).then((response) => {
         newTasks = response.data
 
@@ -194,7 +196,9 @@ export default function CompletedTasks() {
     await Axios.get(`${baseURL}/getObsList`).then((response) => {
       newObsList = response.data
       Axios.post(`${baseURL}/getPreviousCompletedTasks`, {
-        taskId: firstTask.taskId
+        taskId: firstTask.taskId,        
+        userGroup: user.group,
+        userId: user.id,
       }).then((response) => {
         newTasks = response.data
 
