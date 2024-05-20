@@ -66,6 +66,9 @@ export default function CompletedTasks() {
   const [stats, setStats] = useState(['Criado', 'Aberto', 'Em andamento', 'Enviado p/ tec', 'Aguardando liberação', 'Fechado'])
   const [disable, setDisable] = useState(true)
   const [images, setImages] = useState([])
+  const [pages, setPages] = useState()
+  const [actualPage, setActualPage] = useState(0)
+  const [filtred, setFiltred] = useState(false)
 
 
 
@@ -83,6 +86,15 @@ export default function CompletedTasks() {
       setIsAdmin(true)
       setDisable(false)
     }
+
+    async function getpages() {
+      Axios.get(`${baseURL}/getPages`).then(async (response) => {
+        setPages(response.data[0].pagina)
+      })
+    }
+
+    getpages()
+
 
   }, [])
 
@@ -149,41 +161,76 @@ export default function CompletedTasks() {
     setLoadingMore(false)
   }
 
-
-
   async function nextTasks() {
 
 
-    setLoadingMore(true)
+    // setLoadingMore(true)
 
-    await Axios.get(`${baseURL}/getObsList`).then((response) => {
-      newObsList = response.data
-      Axios.post(`${baseURL}/getNextCompletedTasks`, {
-        taskId: lastTask.taskId,        
-        userGroup: user.group,
-        userId: user.id,
-      }).then((response) => {
-        newTasks = response.data
+    // await Axios.get(`${baseURL}/getObsList`).then((response) => {
+    //   newObsList = response.data
+    //   Axios.post(`${baseURL}/getNextCompletedTasks`, {
+    //     taskId: lastTask.taskId,
+    //     userGroup: user.group,
+    //     userId: user.id,
+    //   }).then((response) => {
+    //     newTasks = response.data
 
-        if (response.data.length > 0) {
+    //     if (response.data.length > 0) {
+    //       if (user.group === "admin") {
+    //         setTasks("")
+    //         loadTasks(newTasks, newObsList)
+    //         setFirstPage(false)
+    //       } else {
+    //         setTasks("")
+    //         const tasksDocs = newTasks.filter((t) => user.email === t.userEmail)
+    //         const obsDocs = newObsList.filter((o) => user.name === o.client)
+    //         loadTasks(tasksDocs, obsDocs)
+    //         setFirstPage(false)
+    //       }
+    //     } else {
+    //       setLoadingMore(false)
+    //       setIsEmpty(true)
+    //       toast.warning("Não existem mais chamados")
+    //     }
+    //   })
+    // })
+
+    setActualPage(actualPage + 1)
+    let page = actualPage + 1
+    if (page !== pages) {
+      await Axios.get(`${baseURL}/getObsList`).then((response) => {
+        newObsList = response.data
+        Axios.post(`${baseURL}/getNextCompletedTasks`, {
+          actualPage: page,
+          userGroup: user.group,
+          userId: user.id,
+          filtred: filtred,
+          type: selectedType
+        }).then((response) => {
+          newTasks = response.data
+
           if (user.group === "admin") {
             setTasks("")
             loadTasks(newTasks, newObsList)
             setFirstPage(false)
+
           } else {
             setTasks("")
             const tasksDocs = newTasks.filter((t) => user.email === t.userEmail)
             const obsDocs = newObsList.filter((o) => user.name === o.client)
             loadTasks(tasksDocs, obsDocs)
             setFirstPage(false)
+
           }
-        } else {
-          setLoadingMore(false)
-          setIsEmpty(true)
-          toast.warning("Não existem mais chamados")
-        }
+        })
       })
-    })
+    } else {
+      setLoadingMore(false)
+      setIsEmpty(true)
+      setActualPage(pages - 1)
+      toast.warning("Não existem mais chamados")
+
+    }
 
 
   }
@@ -191,18 +238,54 @@ export default function CompletedTasks() {
   async function previousTasks() {
 
 
-    setLoadingMore(true)
+    // setLoadingMore(true)
 
-    await Axios.get(`${baseURL}/getObsList`).then((response) => {
-      newObsList = response.data
-      Axios.post(`${baseURL}/getPreviousCompletedTasks`, {
-        taskId: firstTask.taskId,        
-        userGroup: user.group,
-        userId: user.id,
-      }).then((response) => {
-        newTasks = response.data
+    // await Axios.get(`${baseURL}/getObsList`).then((response) => {
+    //   newObsList = response.data
+    //   Axios.post(`${baseURL}/getPreviousCompletedTasks`, {
+    //     taskId: firstTask.taskId,
+    //     userGroup: user.group,
+    //     userId: user.id,
+    //   }).then((response) => {
+    //     newTasks = response.data
 
-        if (response.data.length > 0) {
+    //     if (response.data.length > 0) {
+    //       if (user.group === "admin") {
+    //         setTasks("")
+    //         loadTasks(newTasks, newObsList)
+    //         setIsEmpty(false)
+
+    //       } else {
+    //         setTasks("")
+    //         const tasksDocs = newTasks.filter((t) => user.email === t.userEmail)
+    //         const obsDocs = newObsList.filter((o) => user.name === o.client)
+    //         loadTasks(tasksDocs, obsDocs)
+    //         setIsEmpty(false)
+    //       }
+    //     } else {
+    //       setLoadingMore(false)
+    //       setFirstPage(true)
+    //       toast.warning("Não existem páginas anteriores")
+    //     }
+    //   })
+    // })
+
+    setActualPage(actualPage - 1)
+    let page = actualPage - 1
+
+
+    if (page >= 0) {
+      await Axios.get(`${baseURL}/getObsList`).then((response) => {
+        newObsList = response.data
+        Axios.post(`${baseURL}/getNextCompletedTasks`, {
+          actualPage: page,
+          userGroup: user.group,
+          userId: user.id,
+          filtred: filtred,
+          type: selectedType
+        }).then((response) => {
+          newTasks = response.data
+
           if (user.group === "admin") {
             setTasks("")
             loadTasks(newTasks, newObsList)
@@ -215,13 +298,15 @@ export default function CompletedTasks() {
             loadTasks(tasksDocs, obsDocs)
             setIsEmpty(false)
           }
-        } else {
-          setLoadingMore(false)
-          setFirstPage(true)
-          toast.warning("Não existem páginas anteriores")
-        }
+        })
       })
-    })
+    } else {
+      setLoadingMore(false)
+      setFirstPage(true)
+      setActualPage(0)
+      toast.warning("Não existem páginas anteriores")
+
+    }
 
 
   }
@@ -266,23 +351,69 @@ export default function CompletedTasks() {
 
   async function filter(e) {
 
+    // e.preventDefault()
+    // setLoading(true)
+    // setTasks('')
+    // setSelectedType(e.target.value)
+    // let filterDocs = ""
+
+    // if (user.group === "admin") {
+    //   Axios.post(`${baseURL}/filterTasks`, {
+    //     type: e.target.value,
+    //     table: 'completedTasks'
+    //   }).then((response) => {
+    //     setIsEmpty(false)
+    //     setLoadingMore(false)
+    //     loadTasks(response.data, newObsList)
+    //   })
+    // } else {
+    //   Axios.post(`${baseURL}/filterTasks`, {
+    //     type: e.target.value,
+    //     table: 'completedTasks'
+    //   }).then((response) => {
+    //     const tasksDocs = response.data.filter((t) => user.email === t.userEmail)
+    //     const obsDocs = newObsList.filter((o) => user.name === o.client)
+    //     setIsEmpty(false)
+    //     setLoadingMore(false)
+    //     loadTasks(tasksDocs, obsDocs)
+    //   })
+    // }
+
+
     e.preventDefault()
     setLoading(true)
+    setActualPage(0)
     setTasks('')
     setSelectedType(e.target.value)
     let filterDocs = ""
 
+    await Axios.post(`${baseURL}/getFiltredPages`,{
+      type: e.target.value,
+      table: 'completedtasks'
+    }).then(async (response) => {
+      console.log(selectedType)
+      if(response.data[0].pagina === 1 ){
+        console.log("Uma Pagina" + response.data[0].pagina)
+        setPages(response.data[0].pagina)
+      }else{
+        console.log("Mais de uma Pagina" + response.data[0].pagina)
+        setPages(response.data[0].pagina)
+      }
+    })
+
     if (user.group === "admin") {
-      Axios.post(`${baseURL}/filtertask`, {
-        type: e.target.value
+      Axios.post(`${baseURL}/filterTasks`, {
+        type: e.target.value,
+        table: 'completedtasks'
       }).then((response) => {
         setIsEmpty(false)
         setLoadingMore(false)
         loadTasks(response.data, newObsList)
       })
     } else {
-      Axios.post(`${baseURL}/filtertask`, {
-        type: e.target.value
+      Axios.post(`${baseURL}/filterTasks`, {
+        type: e.target.value,
+        table: 'completedtasks'
       }).then((response) => {
         const tasksDocs = response.data.filter((t) => user.email === t.userEmail)
         const obsDocs = newObsList.filter((o) => user.name === o.client)
@@ -290,10 +421,8 @@ export default function CompletedTasks() {
         setLoadingMore(false)
         loadTasks(tasksDocs, obsDocs)
       })
-
-
-
     }
+    setFiltred(true)
 
 
   }
@@ -314,7 +443,6 @@ export default function CompletedTasks() {
 
 
   }
-
 
   if (loading) {
     return (
