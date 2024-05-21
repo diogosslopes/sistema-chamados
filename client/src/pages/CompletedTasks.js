@@ -164,38 +164,7 @@ export default function CompletedTasks() {
   async function nextTasks() {
 
 
-    // setLoadingMore(true)
 
-    // await Axios.get(`${baseURL}/getObsList`).then((response) => {
-    //   newObsList = response.data
-    //   Axios.post(`${baseURL}/getNextCompletedTasks`, {
-    //     taskId: lastTask.taskId,
-    //     userGroup: user.group,
-    //     userId: user.id,
-    //   }).then((response) => {
-    //     newTasks = response.data
-
-    //     if (response.data.length > 0) {
-    //       if (user.group === "admin") {
-    //         setTasks("")
-    //         loadTasks(newTasks, newObsList)
-    //         setFirstPage(false)
-    //       } else {
-    //         setTasks("")
-    //         const tasksDocs = newTasks.filter((t) => user.email === t.userEmail)
-    //         const obsDocs = newObsList.filter((o) => user.name === o.client)
-    //         loadTasks(tasksDocs, obsDocs)
-    //         setFirstPage(false)
-    //       }
-    //     } else {
-    //       setLoadingMore(false)
-    //       setIsEmpty(true)
-    //       toast.warning("Não existem mais chamados")
-    //     }
-    //   })
-    // })
-
-    setActualPage(actualPage + 1)
     let page = actualPage + 1
     if (page !== pages) {
       await Axios.get(`${baseURL}/getObsList`).then((response) => {
@@ -208,6 +177,7 @@ export default function CompletedTasks() {
           type: selectedType
         }).then((response) => {
           newTasks = response.data
+          setActualPage(actualPage + 1)
 
           if (user.group === "admin") {
             setTasks("")
@@ -238,42 +208,9 @@ export default function CompletedTasks() {
   async function previousTasks() {
 
 
-    // setLoadingMore(true)
-
-    // await Axios.get(`${baseURL}/getObsList`).then((response) => {
-    //   newObsList = response.data
-    //   Axios.post(`${baseURL}/getPreviousCompletedTasks`, {
-    //     taskId: firstTask.taskId,
-    //     userGroup: user.group,
-    //     userId: user.id,
-    //   }).then((response) => {
-    //     newTasks = response.data
-
-    //     if (response.data.length > 0) {
-    //       if (user.group === "admin") {
-    //         setTasks("")
-    //         loadTasks(newTasks, newObsList)
-    //         setIsEmpty(false)
-
-    //       } else {
-    //         setTasks("")
-    //         const tasksDocs = newTasks.filter((t) => user.email === t.userEmail)
-    //         const obsDocs = newObsList.filter((o) => user.name === o.client)
-    //         loadTasks(tasksDocs, obsDocs)
-    //         setIsEmpty(false)
-    //       }
-    //     } else {
-    //       setLoadingMore(false)
-    //       setFirstPage(true)
-    //       toast.warning("Não existem páginas anteriores")
-    //     }
-    //   })
-    // })
-
-    setActualPage(actualPage - 1)
     let page = actualPage - 1
-
-
+    
+    
     if (page >= 0) {
       await Axios.get(`${baseURL}/getObsList`).then((response) => {
         newObsList = response.data
@@ -285,7 +222,8 @@ export default function CompletedTasks() {
           type: selectedType
         }).then((response) => {
           newTasks = response.data
-
+          setActualPage(actualPage - 1)
+          
           if (user.group === "admin") {
             setTasks("")
             loadTasks(newTasks, newObsList)
@@ -570,13 +508,18 @@ export default function CompletedTasks() {
                 </select>
               </div>
             </div>
-            {/* <TasksTable tasks={tasks} order={orderBy} page={'completedtasks'} /> */}
+            
             {loadingMore ? <Loading /> : <TasksTable tasks={tasks} order={orderBy} page={'completedtasks'} />}
 
 
-            {!loadingMore && !firstPage && <button className="button-hover" onClick={previousTasks}>Página Anterior</button>}
-            {!loadingMore && !isEmpty && <button className="button-hover" onClick={nextTasks}>Proxima Página</button>}
-            {/* {!loadingMore && <button className="button-hover" onClick={(e) => TasksReport(tasks)}>Imprimir</button>} */}
+            <div className="bottom-menu">
+              <div className="bottom-buttons">
+                {!loadingMore && !firstPage && <button className="button-hover" onClick={previousTasks}>Página Anterior</button>}
+                {!loadingMore && !isEmpty && <button className="button-hover" onClick={nextTasks}>Proxima Página</button>}
+                
+              </div>
+              {!loadingMore && <label >{`Pagina atual ${actualPage + 1}`}</label>}
+            </div>
 
           </div>
         }

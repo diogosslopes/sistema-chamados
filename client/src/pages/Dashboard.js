@@ -350,7 +350,6 @@ export default function Dashboard() {
   async function nextTasks() {
 
     // setLoadingMore(true)
-    setActualPage(actualPage + 1)
     let page = actualPage + 1
     if (page !== pages) {
       await Axios.get(`${baseURL}/getObsList`).then((response) => {
@@ -363,6 +362,7 @@ export default function Dashboard() {
           type: selectedType
         }).then((response) => {
           newTasks = response.data
+          setActualPage(actualPage + 1)
 
           if (user.group === "admin") {
             setTasks("")
@@ -393,10 +393,9 @@ export default function Dashboard() {
 
 
     // setLoadingMore(true)
-    setActualPage(actualPage - 1)
     let page = actualPage - 1
-
-
+    
+    
     if (page >= 0) {
       await Axios.get(`${baseURL}/getObsList`).then((response) => {
         newObsList = response.data
@@ -408,6 +407,7 @@ export default function Dashboard() {
           type: selectedType
         }).then((response) => {
           newTasks = response.data
+          setActualPage(actualPage - 1)
 
           if (user.group === "admin") {
             setTasks("")
@@ -464,14 +464,14 @@ export default function Dashboard() {
     setSelectedType(e.target.value)
     let filterDocs = ""
 
-    await Axios.post(`${baseURL}/getFiltredPages`,{
+    await Axios.post(`${baseURL}/getFiltredPages`, {
       type: e.target.value
     }).then(async (response) => {
       console.log(selectedType)
-      if(response.data[0].pagina === 1 ){
+      if (response.data[0].pagina === 1) {
         console.log("Uma Pagina" + response.data[0].pagina)
         setPages(response.data[0].pagina)
-      }else{
+      } else {
         console.log("Mais de uma Pagina" + response.data[0].pagina)
         setPages(response.data[0].pagina)
       }
@@ -679,15 +679,19 @@ export default function Dashboard() {
                   <option value="TI">TI</option>
                   <option value="Estrutura">Estrutura</option>
                 </select>
-                {!loadingMore && <label >{`Pagina atual ${actualPage + 1}`}</label>}
               </div>
             </div>
             {/* <TasksTable tasks={tasks} order={orderBy} getDoc={getDocs} disable='true' /> */}
             {loadingMore ? <Loading /> : <TasksTable tasks={tasks} order={orderBy} getDoc={getDocs} disable='true' />}
 
-            {!loadingMore && !firstPage && <button className="button-hover" onClick={previousTasks}>Página Anterior</button>}
-            {!loadingMore && !isEmpty && <button className="button-hover" onClick={nextTasks}>Proxima Página</button>}
-            {!loadingMore && <button className="button-hover" onClick={(e) => TasksReport(tasks)}>Imprimir</button>}
+            <div className="bottom-menu">
+              <div className="bottom-buttons">
+                {!loadingMore && !firstPage && <button className="button-hover" onClick={previousTasks}>Página Anterior</button>}
+                {!loadingMore && !isEmpty && <button className="button-hover" onClick={nextTasks}>Proxima Página</button>}
+                {!loadingMore && <button className="button-hover" onClick={(e) => TasksReport(tasks)}>Imprimir</button>}
+              </div>
+              {!loadingMore && <label >{`Pagina atual ${actualPage + 1}`}</label>}
+            </div>
 
           </div>
         }

@@ -112,116 +112,133 @@ export default function Reports() {
   function handleReport() {
     console.log("Gerou")
 
+    console.log(dateEnd)
+    console.log(dateIni)
 
+    if(dateIni !== '' && dateEnd !== ''){
 
-    // Axios.post(`${baseURL}/getReport`, {
-    //   taskType: type
-    // }).then((result)=>{
-    //   console.log(result.data)
-    // })
-
-    function formatDate(data){
-      let list = []
-      data.forEach((doc)=>{
-       const formatedDate = moment.utc(doc.created).format("DD/MM/yyyy HH:mm")
-        list.push({
-          taskId: doc.taskId,
-          client: doc.client,
-          created: formatedDate,
-          obs: doc.obs,
-          priority: doc.priority,
-          status: doc.status,
-          type: doc.type,
-          subject: doc.subject,
-          userId: doc.userId,
-          taskImages: doc.taskImages,
-          userEmail: doc.userEmail
+    
+      function formatDate(data) {
+        let list = []
+        data.forEach((doc) => {
+          const formatedDate = moment.utc(doc.created).format("DD/MM/yyyy HH:mm")
+          list.push({
+            taskId: doc.taskId,
+            client: doc.client,
+            created: formatedDate,
+            obs: [{obs: doc.obs}] ,
+            priority: doc.priority,
+            status: doc.status,
+            type: doc.type,
+            subject: doc.subject,
+            userId: doc.userId,
+            taskImages: doc.taskImages,
+            userEmail: doc.userEmail
+          })
         })
-      })
-      setTasks(list)
-      TasksReport(list)
-      console.log(list)
+        setTasks(list)
+        
+      }
+  
+      if (unity && type && status) {
+        console.log("Dados completos")
+        Axios.post(`${baseURL}/getReport`, {
+          caseNumber: 1,
+          unity: unity,
+          taskType: type,
+          status: status,
+          dateIni: dateIni,
+          dateFin: dateEnd
+        }).then((result) => {
+          formatDate(result.data)
+        })
+  
+      } else if (unity && type) {
+        Axios.post(`${baseURL}/getReport`, {
+          caseNumber: 2,
+          unity: unity,
+          taskType: type,
+          status: status,
+          dateIni: dateIni,
+          dateFin: dateEnd
+        }).then((result) => {
+          formatDate(result.data)
+        })
+  
+      } else if (unity && status) {
+        Axios.post(`${baseURL}/getReport`, {
+          caseNumber: 3,
+          unity: unity,
+          taskType: type,
+          status: status,
+          dateIni: dateIni,
+          dateFin: dateEnd
+        }).then((result) => {
+          formatDate(result.data)
+        })
+  
+      } else if (type && status) {
+        Axios.post(`${baseURL}/getReport`, {
+          caseNumber: 4,
+          unity: unity,
+          taskType: type,
+          status: status,
+          dateIni: dateIni,
+          dateFin: dateEnd
+        }).then((result) => {
+          formatDate(result.data)
+        })
+  
+      } else if (unity) {
+        Axios.post(`${baseURL}/getReport`, {
+          caseNumber: 5,
+          unity: unity,
+          taskType: type,
+          status: status,
+          dateIni: dateIni,
+          dateFin: dateEnd
+        }).then((result) => {
+          formatDate(result.data)
+        })
+  
+      } else if (status) {
+        Axios.post(`${baseURL}/getReport`, {
+          caseNumber: 6,
+          unity: unity,
+          taskType: type,
+          status: status,
+          dateIni: dateIni,
+          dateFin: dateEnd
+        }).then((result) => {
+          formatDate(result.data)
+        })
+  
+      } else if (type) {
+        Axios.post(`${baseURL}/getReport`, {
+          caseNumber: 7,
+          unity: unity,
+          taskType: type,
+          status: status,
+          dateIni: dateIni,
+          dateFin: dateEnd
+        }).then((result) => {
+          formatDate(result.data)
+        })
+  
+      } else {
+        Axios.post(`${baseURL}/getReport`, {
+          dateIni: dateIni,
+          dateFin: dateEnd
+  
+        }).then((result) => {
+          formatDate(result.data)
+        })
+  
+      }
+    }else{
+      toast.warn('Preencher datas')
     }
 
-    if (unity && type && status) {
-      console.log("Dados completos")
-      Axios.post(`${baseURL}/getReport`, {
-        caseNumber: 1,
-        unity: unity,
-        taskType: type,
-        status: status
-      }).then((result) => {
-        formatDate(result.data)
-      })
-
-    } else if (unity && type) {
-      Axios.post(`${baseURL}/getReport`, {
-        caseNumber: 2,
-        unity: unity,
-        taskType: type,
-        status: status
-      }).then((result) => {
-        formatDate(result.data)
-      })
-
-    } else if (unity && status) {
-      Axios.post(`${baseURL}/getReport`, {
-        caseNumber: 3,
-        unity: unity,
-        taskType: type,
-        status: status
-      }).then((result) => {
-        formatDate(result.data)
-      })
-
-    } else if (type && status) {
-      Axios.post(`${baseURL}/getReport`, {
-        caseNumber: 4,
-        unity: unity,
-        taskType: type,
-        status: status
-      }).then((result) => {
-        formatDate(result.data)
-      })
-
-    } else if (unity) {
-      Axios.post(`${baseURL}/getReport`, {
-        caseNumber: 5,
-        unity: unity,
-        taskType: type,
-        status: status
-      }).then((result) => {
-        formatDate(result.data)
-      })
-
-    } else if (status) {
-      Axios.post(`${baseURL}/getReport`, {
-        caseNumber: 6,
-        unity: unity,
-        taskType: type,
-        status: status
-      }).then((result) => {
-        formatDate(result.data)
-      })
-
-    } else if (type) {
-      Axios.post(`${baseURL}/getReport`, {
-        caseNumber: 7,
-        unity: unity,
-        taskType: type,
-        status: status
-      }).then((result) => {
-        formatDate(result.data)
-      })
-
-    } else {
-      Axios.post(`${baseURL}/getReport`, {
-
-      }).then((result) => {
-        formatDate(result.data)
-      })
-
-    }
 
 
   }
@@ -275,8 +292,13 @@ export default function Reports() {
             })}
           </select>
         </div>
-        <button onClick={() => handleReport(type, status)} >Gerar</button>
-        {tasks && <TasksTable tasks={tasks} page='report' />}
+        <button className="button-hover" onClick={() => handleReport(type, status)} >Gerar</button>
+        {tasks &&
+          <div>
+          <TasksTable tasks={tasks} page='report' />
+          <button className="button-hover" onClick={()=>{TasksReport(tasks)}}>Imprimir</button>
+          </div>
+        }
       </div>
 
 

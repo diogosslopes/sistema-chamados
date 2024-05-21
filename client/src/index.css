@@ -1034,6 +1034,19 @@ th {
   display: none;
 }
 
+.bottom-menu{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bottom-menu label{
+  color: #1BC6B4;
+  font-size: 1.2em;
+  margin-right: 5px;
+}
+
+/* -------------------------------------------------------------------------------------------------------------------------------------------------- */
 
 @media screen and (max-width: 700px) {
   .sidebar {
