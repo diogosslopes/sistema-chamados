@@ -32,8 +32,8 @@ export default function Reports() {
 
   const { user, baseURL } = useContext(AuthContext)
 
-  const [dateIni, setDateIni] = useState()
-  const [dateEnd, setDateEnd] = useState()
+  const [dateIni, setDateIni] = useState('')
+  const [dateEnd, setDateEnd] = useState('')
   const [unity, setUnity] = useState()
   const [status, setStatus] = useState()
   const [type, setType] = useState()

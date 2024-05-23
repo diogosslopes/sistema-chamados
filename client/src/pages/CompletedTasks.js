@@ -164,6 +164,7 @@ export default function CompletedTasks() {
   async function nextTasks() {
 
 
+    setLoadingMore(true)
 
     let page = actualPage + 1
     if (page !== pages) {
@@ -183,6 +184,8 @@ export default function CompletedTasks() {
             setTasks("")
             loadTasks(newTasks, newObsList)
             setFirstPage(false)
+            setLoadingMore(false)
+
 
           } else {
             setTasks("")
@@ -190,6 +193,8 @@ export default function CompletedTasks() {
             const obsDocs = newObsList.filter((o) => user.name === o.client)
             loadTasks(tasksDocs, obsDocs)
             setFirstPage(false)
+            setLoadingMore(false)
+
 
           }
         })
@@ -207,10 +212,11 @@ export default function CompletedTasks() {
 
   async function previousTasks() {
 
+    setLoadingMore(true)
 
     let page = actualPage - 1
-    
-    
+
+
     if (page >= 0) {
       await Axios.get(`${baseURL}/getObsList`).then((response) => {
         newObsList = response.data
@@ -223,11 +229,13 @@ export default function CompletedTasks() {
         }).then((response) => {
           newTasks = response.data
           setActualPage(actualPage - 1)
-          
+
           if (user.group === "admin") {
             setTasks("")
             loadTasks(newTasks, newObsList)
             setIsEmpty(false)
+            setLoadingMore(false)
+
 
           } else {
             setTasks("")
@@ -235,6 +243,8 @@ export default function CompletedTasks() {
             const obsDocs = newObsList.filter((o) => user.name === o.client)
             loadTasks(tasksDocs, obsDocs)
             setIsEmpty(false)
+            setLoadingMore(false)
+
           }
         })
       })
@@ -325,15 +335,15 @@ export default function CompletedTasks() {
     setSelectedType(e.target.value)
     let filterDocs = ""
 
-    await Axios.post(`${baseURL}/getFiltredPages`,{
+    await Axios.post(`${baseURL}/getFiltredPages`, {
       type: e.target.value,
       table: 'completedtasks'
     }).then(async (response) => {
       console.log(selectedType)
-      if(response.data[0].pagina === 1 ){
+      if (response.data[0].pagina === 1) {
         console.log("Uma Pagina" + response.data[0].pagina)
         setPages(response.data[0].pagina)
-      }else{
+      } else {
         console.log("Mais de uma Pagina" + response.data[0].pagina)
         setPages(response.data[0].pagina)
       }
@@ -508,7 +518,7 @@ export default function CompletedTasks() {
                 </select>
               </div>
             </div>
-            
+
             {loadingMore ? <Loading /> : <TasksTable tasks={tasks} order={orderBy} page={'completedtasks'} />}
 
 
@@ -516,7 +526,7 @@ export default function CompletedTasks() {
               <div className="bottom-buttons">
                 {!loadingMore && !firstPage && <button className="button-hover" onClick={previousTasks}>Página Anterior</button>}
                 {!loadingMore && !isEmpty && <button className="button-hover" onClick={nextTasks}>Proxima Página</button>}
-                
+
               </div>
               {!loadingMore && <label >{`Pagina atual ${actualPage + 1}`}</label>}
             </div>

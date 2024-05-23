@@ -349,7 +349,7 @@ export default function Dashboard() {
 
   async function nextTasks() {
 
-    // setLoadingMore(true)
+    setLoadingMore(true)
     let page = actualPage + 1
     if (page !== pages) {
       await Axios.get(`${baseURL}/getObsList`).then((response) => {
@@ -368,6 +368,8 @@ export default function Dashboard() {
             setTasks("")
             loadTasks(newTasks, newObsList)
             setFirstPage(false)
+            setLoadingMore(false)
+
 
           } else {
             setTasks("")
@@ -375,6 +377,7 @@ export default function Dashboard() {
             const obsDocs = newObsList.filter((o) => user.name === o.client)
             loadTasks(tasksDocs, obsDocs)
             setFirstPage(false)
+            setLoadingMore(false)
 
           }
         })
@@ -392,10 +395,10 @@ export default function Dashboard() {
   async function previousTasks() {
 
 
-    // setLoadingMore(true)
+    setLoadingMore(true)
     let page = actualPage - 1
-    
-    
+
+
     if (page >= 0) {
       await Axios.get(`${baseURL}/getObsList`).then((response) => {
         newObsList = response.data
@@ -413,6 +416,8 @@ export default function Dashboard() {
             setTasks("")
             loadTasks(newTasks, newObsList)
             setIsEmpty(false)
+            setLoadingMore(false)
+
 
           } else {
             setTasks("")
@@ -420,6 +425,8 @@ export default function Dashboard() {
             const obsDocs = newObsList.filter((o) => user.name === o.client)
             loadTasks(tasksDocs, obsDocs)
             setIsEmpty(false)
+            setLoadingMore(false)
+
           }
         })
       })
