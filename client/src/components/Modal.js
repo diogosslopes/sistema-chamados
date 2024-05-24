@@ -33,9 +33,7 @@ export default function Modal({ tipo, close, item, getDoc }) {
   const [created, setCreated] = useState(item.created)
   const [obs, setObs] = useState([])
   const [taskImages, setTaskImages] = useState([])
-  const [subjects, setSubjects] = useState(['Impressora', 'Sistema', 'Internet'])
-  const [subjectsTi, setSubjectsTi] = useState(['Impressora', 'Sistema', 'Internet'])
-  const [subjectsGeneral, setSubjectsGeneral] = useState(['Eletrica', 'Pintura', 'Ar Condicionado', 'Hidraulico', 'Portas', 'Outros'])
+  const [subjects, setSubjects] = useState([])
   const [disable, setDisable] = useState(false)
   let fullDate = ''
   const [obsList, setObsList] = useState([])
@@ -43,7 +41,13 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
   const [priority, setPriority] = useState(item.priority)
   const [prioritys, setPrioritys] = useState(['Baixa', 'Média', 'Alta'])
-  const [stats, setStats] = useState(['Criado', 'Aberto', 'Em andamento', 'Enviado p/ tec', 'Aguardando liberação', 'Fechado'])
+  
+  const [subjectList, setSubjectList] = useState([])
+  const [taskTypeList, setTaskTypeList] = useState([])
+  const [statusList, setStatusList] = useState([])
+
+
+
 
 
 
@@ -53,18 +57,6 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
 
 
-  useEffect(() => {
-
-
-    if (taskType === "TI") {
-      setSubjects(subjectsTi)
-    } else {
-      setSubjects(subjectsGeneral)
-    }
-
-
-
-  }, [taskType])
 
   useEffect(() => {
 
@@ -80,8 +72,6 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
     loadClients()
     if (tipo === 'new') {
-
-
       const fullDate = format(new Date(), "dd/MM/yyyy HH:mm")
       setCreated(fullDate)
     }
@@ -109,6 +99,59 @@ export default function Modal({ tipo, close, item, getDoc }) {
     })
 
 
+  }, [])
+
+  useEffect(() => {
+    async function loadStatus() {
+
+      let listStatus = []
+      let listSubject = []
+      let taskTypeList = []
+
+      await Axios.get(`${baseURL}/getTaskTypes`).then(async (response) => {
+
+        response.data.forEach((doc) => {
+          taskTypeList.push({
+            id: doc.id,
+            taskType: doc.taskType,
+
+          })
+
+        })
+
+        setTaskTypeList(taskTypeList)
+        await Axios.get(`${baseURL}/getSubjects`).then((response) => {
+          response.data.forEach((doc) => {
+            listSubject.push({
+              id: doc.id,
+              subject: doc.subject,
+              taskType: doc.taskType
+            })
+
+          })
+          setSubjectList(listSubject)
+          setSubjects(listSubject.filter((s) => s.taskType === item.type))
+        })
+      })
+
+      await Axios.get(`${baseURL}/getStatus`).then((response) => {
+        console.log(item)
+
+        response.data.forEach((doc) => {
+          listStatus.push({
+            id: doc.id,
+            status: doc.status,
+            
+          })
+
+        })
+
+        setStatusList(listStatus)
+      })
+
+
+    }
+    loadStatus()
   }, [])
 
 
@@ -214,6 +257,14 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
   }
 
+  function handleSubjects(value) {
+    setTaskType(value)
+    console.log(value)
+
+    setSubjects(subjectList.filter((s) => s.taskType === value))
+
+  }
+
 
 
 
@@ -235,6 +286,18 @@ export default function Modal({ tipo, close, item, getDoc }) {
               })}
             </select>
           </div>
+          <div className="type_select">
+            <label>Tipo</label>
+            <select disabled={disable} name="taskType" {...register("taskType")} value={taskType} onChange={(e) => { handleSubjects(e.target.value) }}>
+              <option hidden value={''}>Selecione o tipo de chamado</option>
+              {taskTypeList.map((s, index) => {
+                return (
+                  <option value={s.taskType} key={s.id}>{s.taskType}</option>
+                )
+              })}
+
+            </select>
+          </div>
           <div>
             <label>Prioridade</label>
             <select disabled={disable} name="priority" {...register("priority")} value={priority} onChange={(e) => { setPriority(e.target.value) }}>
@@ -252,7 +315,7 @@ export default function Modal({ tipo, close, item, getDoc }) {
               <option hidden value={''} >Selecione o assunto</option>
               {subjects.map((s, index) => {
                 return (
-                  <option value={s} key={index}>{s}</option>
+                  <option value={s.subject} key={s.id}>{s.subject}</option>
                 )
               })}
             </select>
@@ -261,20 +324,11 @@ export default function Modal({ tipo, close, item, getDoc }) {
             <label>Status</label>
             <select disabled={disable} name="status" {...register("status")} value={status} onChange={(e) => setStatus(e.target.value)}>
               <option hidden value={''}>Selecione o status</option>
-              {stats.map((s, index) => {
+              {statusList.map((s, index) => {
                 return (
-                  <option value={s} key={index}>{s}</option>
+                  <option value={s.status} key={index}>{s.status}</option>
                 )
               })}
-            </select>
-          </div>
-          <div className="type_select">
-            <label>Tipo</label>
-            <select disabled={disable} name="taskType" {...register("taskType")} value={taskType} onChange={(e) => setTaskType(e.target.value)}>
-              <option hidden value={''}>Selecione o tipo de chamado</option>
-              <option>TI</option>
-              <option>Estrutura</option>
-
             </select>
           </div>
           <div>
