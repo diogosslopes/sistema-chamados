@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { FiEdit2, FiSearch, FiDelete, FiTrash, FiCheck } from "react-icons/fi";
+import { FiEdit2, FiSearch, FiDelete, FiTrash, FiCheck, FiClipboard } from "react-icons/fi";
 import firebase from '../services/firebaseConnection';
 import '../index.css'
 import { format } from 'date-fns'
@@ -15,7 +15,7 @@ import DeleteModal from "./DeleteModal";
 import Axios from "axios";
 
 
-export default function TasksTable({ tasks, order, getDoc, page }) {
+export default function TasksTable({ tasks, order, getDoc, page, tipo }) {
 
     const { user, baseURL } = useContext(AuthContext)
 
@@ -29,28 +29,43 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [newTask, setNewTask] = useState()
     const [hide, setHide] = useState()
+    const [show, setShow] = useState()
+    const [name, setName] = useState()
+    const [disable, setDisable] = useState('none')
+
+    console.log(tasks)
 
 
     useEffect(() => {
+        console.log(tipo)
+        console.log(page)
         if (page === 'report') {
             setHide('hide-column')
+            setShow('show-column')
         }
-        console.log(page)
-    }, [])
+
+        if (tipo === 'evaluation') {
+            setDisable('inline')
+        }
+    }, [tasks])
 
     function editClient(t, item) {
+
         setType(t)
         setShowModal(!showModal)
-        if (showModal) {
+        console.log(disable)
 
+        if (showModal === false) {
+            setName(`Chamado numero ${item.taskId}`)
         }
+
         if (t === 'edit') {
             setTask(item)
+            setName("Editar Chamado")
         } else {
             setTask(item)
         }
     }
-
 
     async function deleteTask(id) {
         setTaskId(id)
@@ -64,29 +79,20 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
         const fullDate = format(new Date(), "yyyy-MM-dd HH:mm:ss")
         setConcluded(fullDate)
 
-        await Axios.put(`${baseURL}/editTaskConcluded`, {
+        await Axios.put(`${baseURL}/concludeTask`, {
             taskId: task.taskId,
             concluded: fullDate
         }).then(() => {
             toast.success("Chamado finalizado!")
         })
 
-        // await Axios.post(`${baseURL}/completeTask`, {
-        //     client: task.client,
-        //     subject: task.subject,
-        //     priority: task.priority,
-        //     status: task.status,
-        //     type: task.type,
-        //     created: task.created,
-        //     concluded: fullDate,
-        //     obs: task.obs,
-        //     userId: task.clientId,
-        //     userEmail: task.userEmail,
-        //     taskId: task.taskId
-        // }).then(() => {
-        // })
+    }
 
-
+    async function evaluateTask(t, item) {
+        setTask(item)
+        setType(t)
+        setName(`Avaliação de chamado`)
+        setShowModal(!showModal)
     }
 
     return (
@@ -101,8 +107,16 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
                         <th scope="col" onClick={() => order('status', 'completedtask')}>Status</th>
                         <th scope="col" onClick={() => order('created', 'completedtask')}>Criado em</th>
                         {page === 'completedtasks' &&
-                            <th scope="col" onClick={() => order('concluded', 'completedtask')}>Concluido em</th>
+                            <>
+                                <th scope="col" onClick={() => order('concluded', 'completedtask')}>Concluido em</th>
+                                <th scope="col" >Nota</th>
+                            </>
                         }
+                        {page === 'report' &&
+
+                            <th scope="col" >Nota</th>
+                        }
+
                         <th scope="col" className={hide} >#</th>
                     </tr>
                 </thead>
@@ -117,14 +131,23 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
                                 <td data-label="Status"><span className="status">{task.status}</span></td>
                                 <td data-label="Criado em">{task.created}</td>
                                 {page === 'completedtasks' &&
-                                    <td data-label="Concluido em">{task.concluded}</td>
+                                    <>
+                                        <td data-label="Concluido em">{task.concluded}</td>
+                                        <td data-label="Nota" className={`${show}`}>{task.grade}</td>
+                                    </>
+                                }
+                                {page === 'report' &&
+                                    <td data-label="Nota" className={`${show}`}>{task.grade}</td>
                                 }
                                 <td data-label="#" className={hide}>
                                     {page === 'completedtasks' ?
-                                        <button className="task-btn search" onClick={() => editClient('show', task)}><FiSearch size={17} /></button>
+                                        <div>
+                                            <button className="task-btn search" onClick={() => editClient('show', task)}><FiSearch size={17} /></button>
+                                            <button className="task-btn grade" style={{ display: disable }} onClick={() => evaluateTask('evaluate', task)}><FiClipboard size={17} /></button>
+                                        </div>
                                         :
                                         <div >
-                                            <button className="task-btn search"  onClick={() => editClient('show', task)}><FiSearch size={17} /></button>
+                                            <button className="task-btn search" onClick={() => editClient('show', task)}><FiSearch size={17} /></button>
                                             <button className="task-btn edit" onClick={() => editClient('edit', task)}><FiEdit2 size={17} /></button>
                                             {user.group === 'admin' && (
                                                 <button className="task-btn check" onClick={() => completeTask(task)}><FiCheck size={17} /></button>
@@ -141,7 +164,7 @@ export default function TasksTable({ tasks, order, getDoc, page }) {
                 </tbody>
             </table>
             {showModal && (
-                <Modal tipo={type} close={editClient} item={task} getDoc={getDoc} itens={tasks} />
+                <Modal tipo={type} close={editClient} item={task} getDoc={getDoc} itens={tasks} title={name} />
             )}
             {showDeleteModal && (
                 <DeleteModal id={taskId} close={deleteTask} bd={"tasks"} getDoc={getDoc} />

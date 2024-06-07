@@ -215,7 +215,10 @@ export default function Dashboard() {
           subject: doc.subject,
           userId: doc.userId,
           taskImages: doc.taskImages,
-          userEmail: doc.userEmail
+          userEmail: doc.userEmail,
+          grade: doc.grade,
+          comment: doc.comment,
+          responsable: doc.responsable,
         })
         obsList = []
       })
@@ -246,10 +249,33 @@ export default function Dashboard() {
   }
 
   function sendEmail() {
-    emailjs.send("service_uw92p6x", "template_a9s048m", templateParams, "BrAq6Nxcac_3F_GXo")
-      .then((response) => {
-        console.log("Email enviado ", response.status, response.text)
-      })
+
+      if(taskType === 'TI'){
+        emailjs.send("service_uw92p6x", "template_a9s048m", {
+          unity: client,
+          subject: subject,
+          message: obs,
+          emailDest: 'ticentrolab@centrolabvr.com.br'
+        }, "BrAq6Nxcac_3F_GXo").then((response) => {
+            console.log("Email enviado ", response.status, response.text)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+        }else if(taskType === 'Estrutura'){
+        emailjs.send("service_uw92p6x", "template_a9s048m", {
+          unity: client,
+          subject: subject,
+          message: obs,
+          emailDest: 'compras@centrolabvr.com.br'
+        }, "BrAq6Nxcac_3F_GXo").then((response) => {
+            console.log("Email enviado ", response.status, response.text)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+  
+      }
   }
 
   async function saveTask(e) {
@@ -474,12 +500,9 @@ export default function Dashboard() {
     await Axios.post(`${baseURL}/getFiltredPages`, {
       type: e.target.value
     }).then(async (response) => {
-      console.log(selectedType)
       if (response.data[0].pagina === 1) {
-        console.log("Uma Pagina" + response.data[0].pagina)
         setPages(response.data[0].pagina)
       } else {
-        console.log("Mais de uma Pagina" + response.data[0].pagina)
         setPages(response.data[0].pagina)
       }
     })

@@ -133,7 +133,9 @@ export default function Reports() {
             subject: doc.subject,
             userId: doc.userId,
             taskImages: doc.taskImages,
-            userEmail: doc.userEmail
+            userEmail: doc.userEmail,
+            grade: doc.grade,
+            comment: doc.comment
           })
         })
         setTasks(list)

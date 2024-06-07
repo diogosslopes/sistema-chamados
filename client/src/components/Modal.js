@@ -11,16 +11,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../context/auth";
 import emailjs, { send } from '@emailjs/browser'
 import Axios from "axios";
+import Title from "./Title";
+import { useNavigate } from "react-router-dom";
+import { FiCheckSquare } from "react-icons/fi";
 
 
 const validation = yup.object().shape({
   client: yup.string(),
-  status: yup.string().required('Status é obrigatorio'),
+  // status: yup.string().required('Status é obrigatorio'),
   obs: yup.string().max(300, 'Maximo de 300 caracteres'),
 })
 
 
-export default function Modal({ tipo, close, item, getDoc }) {
+export default function Modal({ tipo, close, item, getDoc, title, handleEvaluation }) {
 
   const { user, baseURL } = useContext(AuthContext)
   const [newTask, setNewTask] = useState({})
@@ -41,10 +44,13 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
   const [priority, setPriority] = useState(item.priority)
   const [prioritys, setPrioritys] = useState(['Baixa', 'Média', 'Alta'])
-  
+
   const [subjectList, setSubjectList] = useState([])
   const [taskTypeList, setTaskTypeList] = useState([])
   const [statusList, setStatusList] = useState([])
+  const [comment, setComment] = useState(item.comment)
+  const [grade, setGrade] = useState(item.grade)
+  const navigate = useNavigate()
 
 
 
@@ -56,9 +62,10 @@ export default function Modal({ tipo, close, item, getDoc }) {
   })
 
 
-
+console.log(item)
 
   useEffect(() => {
+
 
     async function loadClients() {
 
@@ -76,7 +83,7 @@ export default function Modal({ tipo, close, item, getDoc }) {
       setCreated(fullDate)
     }
 
-    if (tipo === 'show') {
+    if (tipo === 'show' || tipo === 'evaluate') {
       setDisable(true)
       setSubject(item.subject)
       return
@@ -135,13 +142,12 @@ export default function Modal({ tipo, close, item, getDoc }) {
       })
 
       await Axios.get(`${baseURL}/getStatus`).then((response) => {
-        console.log(item)
 
         response.data.forEach((doc) => {
           listStatus.push({
             id: doc.id,
             status: doc.status,
-            
+
           })
 
         })
@@ -154,51 +160,116 @@ export default function Modal({ tipo, close, item, getDoc }) {
     loadStatus()
   }, [])
 
-
-
-
-
   const save = data => {
     saveTask()
   }
 
-  const templateParams = {
-    unity: user.name,
-    subject: subject,
-    message: obs,
-    email: item.userEmail,
-    status: status,
-    priority: priority
-  }
-
   function sendEmail() {
-    emailjs.send("service_uw92p6x", "template_shcpe8x", templateParams, "BrAq6Nxcac_3F_GXo")
-      .then((response) => {
+
+    if (user.group === 'admin') {
+      emailjs.send("service_uw92p6x", "template_shcpe8x", {
+        unity: user.name,
+        subject: subject,
+        message: obs,
+        email: item.userEmail,
+        status: status,
+        priority: priority
+      }, "BrAq6Nxcac_3F_GXo").then((response) => {
         console.log("Email enviado ", response.status, response.text)
       })
-      .catch((err) => {
-        console.log(err)
-      })
+        .catch((err) => {
+          console.log(err)
+        })
+    } else {
+      if (item.type === 'TI') {
+        emailjs.send("service_uw92p6x", "template_shcpe8x", {
+          unity: user.name,
+          subject: subject,
+          message: obs,
+          email: 'ticentrolab@centrolabvr.com.br',
+          status: status,
+          priority: priority
+        }, "BrAq6Nxcac_3F_GXo").then((response) => {
+          console.log("Email enviado ", response.status, response.text)
+        })
+          .catch((err) => {
+            console.log(err)
+          })
+      } else if (item.type === 'Estrutura') {
+        emailjs.send("service_uw92p6x", "template_shcpe8x", {
+          unity: user.name,
+          subject: subject,
+          message: obs,
+          email: 'compras@centrolabvr.com.br',
+          status: status,
+          priority: priority
+        }, "BrAq6Nxcac_3F_GXo").then((response) => {
+          console.log("Email enviado ", response.status, response.text)
+        })
+          .catch((err) => {
+            console.log(err)
+          })
+
+      }
+
+    }
+
+
+
   }
 
-  async function saveTask(e) {
+  async function saveTask() {
 
 
 
-    Axios.put(`${baseURL}/editTask`, {
-      taskId: item.taskId,
-      userId: client,
-      client: client,
-      priority: priority,
-      subject: subject,
-      status: status,
-      type: taskType
-    }).then(() => {
+    if (tipo === 'edit') {
+      Axios.put(`${baseURL}/editTask`, {
+        taskId: item.taskId,
+        userId: client,
+        client: client,
+        priority: priority,
+        subject: subject,
+        status: status,
+        type: taskType
+      }).then(() => {
+        close()
+        sendEmail()
+        getDoc()
+        toast.success("Edição realizada!")
+      })
+
+    } else if (tipo === 'evaluate') {
+
+      Axios.put(`${baseURL}/evaluateTask`, {
+        taskId: item.taskId,
+        comment: comment,
+        grade: grade,
+
+      }).then(async() => {
+
+       await Axios.post(`${baseURL}/getGrades`, {
+          userId: item.responsable
+        }).then(async (response) => {
+
+          await Axios.post(`${baseURL}/editGrade`, {
+            userId: item.responsable,
+            grade: response.data[0].media
+          })
+
+          console.log(response.data[0].media)
+        })
+
+        close()
+        navigate('/')
+        toast.success("Avaliação realizada!")
+
+      })
+
+    } else {
       close()
-      getDoc()
-      sendEmail()
-      toast.success("Edição realizada!")
-    })
+    }
+
+
 
 
 
@@ -225,9 +296,6 @@ export default function Modal({ tipo, close, item, getDoc }) {
       ...obsList,
       newOBS
     ])
-
-
-
 
 
     Axios.post(`${baseURL}/registerobs`, {
@@ -259,98 +327,152 @@ export default function Modal({ tipo, close, item, getDoc }) {
 
   function handleSubjects(value) {
     setTaskType(value)
-    console.log(value)
 
     setSubjects(subjectList.filter((s) => s.taskType === value))
 
   }
 
 
-
-
-
   return (
     <div className="modal">
       <div className="modal-new">
-        <h1>Cadastro de Chamado</h1>
+
+        <>
+          <Title className='modal-title' name={title} task={item} id={item.taskId} />
+
+        </>
+
         <form onSubmit={handleSubmit(saveTask)} className="form-modal" >
-          <div>
-            <label>Cliente</label>
-            <select disabled="disable" name="client" {...register("client")} onSelect={(e) => handleSelect(e)} value={client} onChange={(e) => handleClient(e)} >
-              <option hidden value={''}>Selecione a unidade</option>
 
-              {clients.map((c, index) => {
-                return (
-                  <option value={c.name} id={c.clientId} className="clientOption" key={c.clientId}>{c.name}</option>
-                )
-              })}
-            </select>
-          </div>
-          <div className="type_select">
-            <label>Tipo</label>
-            <select disabled={disable} name="taskType" {...register("taskType")} value={taskType} onChange={(e) => { handleSubjects(e.target.value) }}>
-              <option hidden value={''}>Selecione o tipo de chamado</option>
-              {taskTypeList.map((s, index) => {
-                return (
-                  <option value={s.taskType} key={s.id}>{s.taskType}</option>
-                )
-              })}
+          {tipo !== 'evaluate' ?
+            <>
+              <div>
+                <label>Cliente</label>
+                <select disabled="disable" name="client" {...register("client")} onSelect={(e) => handleSelect(e)} value={client} onChange={(e) => handleClient(e)} >
+                  <option hidden value={''}>Selecione a unidade</option>
 
-            </select>
-          </div>
-          <div>
-            <label>Prioridade</label>
-            <select disabled={disable} name="priority" {...register("priority")} value={priority} onChange={(e) => { setPriority(e.target.value) }}>
-              <option hidden value={''} >Selecione o assunto</option>
-              {prioritys.map((p, index) => {
-                return (
-                  <option value={p} key={index}>{p}</option>
-                )
-              })}
-            </select>
-          </div>
-          <div>
-            <label>Assunto</label>
-            <select disabled={disable} name="subject" {...register("subject")} value={subject} onChange={(e) => { setSubject(e.target.value) }}>
-              <option hidden value={''} >Selecione o assunto</option>
-              {subjects.map((s, index) => {
-                return (
-                  <option value={s.subject} key={s.id}>{s.subject}</option>
-                )
-              })}
-            </select>
-          </div>
-          <div className="status_select">
-            <label>Status</label>
-            <select disabled={disable} name="status" {...register("status")} value={status} onChange={(e) => setStatus(e.target.value)}>
-              <option hidden value={''}>Selecione o status</option>
-              {statusList.map((s, index) => {
-                return (
-                  <option value={s.status} key={index}>{s.status}</option>
-                )
-              })}
-            </select>
-          </div>
-          <div>
-            <label>Criando em</label>
-            <input value={created} name="created" {...register("created")} onChange={(e) => setCreated(e.target.value)} disabled={true} placeholder="Criado em" />
-          </div>
-          <div className="imagesList">
-            <label>Anexos</label>
-            {/* <a target="_blank" href={`${taskImages}`}>{`Imagem `}</a> */}
-            <div className="list">
-              {
-                taskImages.map((i, index) => {
-                  return (
-                    <a target="_blank" key={i.id} href={`${i.image}`}>{`Imagem ${index + 1}`}</a>
-                  )
-                })
-              }
+                  {clients.map((c, index) => {
+                    return (
+                      <option value={c.name} id={c.clientId} className="clientOption" key={c.clientId}>{c.name}</option>
+                    )
+                  })}
+                </select>
+              </div>
+              <div className="type_select">
+                <label>Tipo</label>
+                <select disabled={disable} name="taskType" {...register("taskType")} value={taskType} onChange={(e) => { handleSubjects(e.target.value) }}>
+                  <option hidden value={''}>Selecione o tipo de chamado</option>
+                  {taskTypeList.map((s, index) => {
+                    return (
+                      <option value={s.taskType} key={s.id}>{s.taskType}</option>
+                    )
+                  })}
+
+                </select>
+              </div>
+              <div>
+                <label>Prioridade</label>
+                <select disabled={disable} name="priority" {...register("priority")} value={priority} onChange={(e) => { setPriority(e.target.value) }}>
+                  <option hidden value={''} >Selecione o assunto</option>
+                  {prioritys.map((p, index) => {
+                    return (
+                      <option value={p} key={index}>{p}</option>
+                    )
+                  })}
+                </select>
+              </div>
+              <div>
+                <label>Assunto</label>
+                <select disabled={disable} name="subject" {...register("subject")} value={subject} onChange={(e) => { setSubject(e.target.value) }}>
+                  <option hidden value={''} >Selecione o assunto</option>
+                  {subjects.map((s, index) => {
+                    return (
+                      <option value={s.subject} key={s.id}>{s.subject}</option>
+                    )
+                  })}
+                </select>
+              </div>
+              <div className="status_select">
+                <label>Status</label>
+                <select disabled={disable} name="status" {...register("status")} value={status} onChange={(e) => setStatus(e.target.value)}>
+                  <option hidden value={''}>Selecione o status</option>
+                  {statusList.map((s, index) => {
+                    return (
+                      <option value={s.status} key={index}>{s.status}</option>
+                    )
+                  })}
+                </select>
+              </div>
+              <div>
+                <label>Criando em</label>
+                <input value={created} name="created" {...register("created")} onChange={(e) => setCreated(e.target.value)} disabled={true} placeholder="Criado em" />
+              </div>
+              <div className="imagesList">
+                <label>Anexos</label>
+                {/* <a target="_blank" href={`${taskImages}`}>{`Imagem `}</a> */}
+                <div className="list">
+                  {
+                    taskImages.map((i, index) => {
+                      return (
+                        <a target="_blank" key={i.id} href={`${i.image}`}>{`Imagem ${index + 1}`}</a>
+                      )
+                    })
+                  }
+                </div>
+              </div></>
+
+            :
+            <div className="modal-grades">
+              <div class="container">
+                <div class="radio-tile-group">
+
+                  <div class="input-container">
+                    <input id="one" type="radio" name="radio" value={1} onClick={(e) => setGrade(e.target.value)} />
+                    <div class="radio-tile">
+                      <label for="one">1</label>
+                    </div>
+                  </div>
+
+                  <div class="input-container">
+                    <input id="two" type="radio" name="radio" value={2} onClick={(e) => setGrade(e.target.value)} />
+                    <div class="radio-tile">
+                      <label for="two">2</label>
+                    </div>
+                  </div>
+
+                  <div class="input-container">
+                    <input id="thre" type="radio" name="radio" value={3} onClick={(e) => setGrade(e.target.value)} />
+                    <div class="radio-tile">
+                      <label for="thre">3</label>
+                    </div>
+                  </div>
+
+                  <div class="input-container">
+                    <input id="four" type="radio" name="radio" value={4} onClick={(e) => setGrade(e.target.value)} />
+                    <div class="radio-tile">
+                      <label for="four">4</label>
+                    </div>
+                  </div>
+
+                  <div class="input-container">
+                    <input id="five" type="radio" name="radio" value={5} onClick={(e) => setGrade(e.target.value)} />
+                    <div class="radio-tile">
+                      <label for="five">5</label>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div className="obs">
+                <textarea name="obs" placeholder="Deixe um comentário sobre o chamado" onChange={(e) => setComment(e.target.value)} />
+              </div>
             </div>
-          </div>
+
+          }
+
           <div id="obs">
             <label>Observações</label>
-            {tipo === 'show' ?
+            {tipo === 'show' || tipo === 'evaluate' ?
               <div className="obs-list">
                 {obsList.map((o) => {
                   return (

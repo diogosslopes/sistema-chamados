@@ -26,6 +26,8 @@ function TasksReport(tasks) {
                 { text: task.subject, fontSize: 9, alignment: 'justify' },
                 { text: task.obs[0].obs, fontSize: 9, alignment: 'justify' },
                 { text: task.created, fontSize: 9 },
+                { text: task.grade, fontSize: 9 },
+                { text: task.comment, fontSize: 9 },
 
             ]
         )
@@ -36,14 +38,16 @@ function TasksReport(tasks) {
         {
             table: {
                 headerRows: 1,
-                widths: [25, '*', 50, 250, 75],
+                widths: [25, 95, 50, 250, 75, 30, 200],
                 body: [
                     [
                         { text: 'ID', style: 'tableHeader' },
                         { text: 'Unidade', style: 'tableHeader' },
                         { text: 'Assunto', style: 'tableHeader' },
                         { text: 'Descrição', style: 'tableHeader' },
-                        { text: 'Data', style: 'tableHeader' }
+                        { text: 'Data', style: 'tableHeader' },
+                        { text: 'Nota', style: 'tableHeader' },
+                        { text: 'Comentário', style: 'tableHeader' }
                     ],
                     ...datas
                     
@@ -71,6 +75,7 @@ function TasksReport(tasks) {
     const docDefinitions = {
         pageSize: 'A4',
         pageMargins: [15, 50, 15, 40],
+        pageOrientation: 'landscape',        
 
         header: [reportTitle],
         content: [reportDatas],

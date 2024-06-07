@@ -36,6 +36,7 @@ export default function Clients() {
     const [editing, setEditing] = useState()
     const [showModal, setShowModal] = useState(false)
     const [unitId, setUnitId] = useState()
+    const [newGrade, setNewGrade] = useState(0)
 
     const elementForm = document.querySelector('.form-client')
     let list = []
@@ -81,13 +82,16 @@ export default function Clients() {
 
             await Axios.get(`${baseURL}/getUsers`).then((response) => {
                 let list = []
+                // console.log(response.data)
                 response.data.forEach((doc) => {
-                    list.push({
+                     list.push({
                         id: doc.clientId,
                         name: doc.name,
                         cnpj: doc.cnpj,
                         adress: doc.adress,
-                        email: doc.email
+                        email: doc.email,
+                        grade: doc.grade,
+                        group: doc.group
                     })
 
                 })
@@ -96,6 +100,15 @@ export default function Clients() {
 
         }
         loadClients()
+
+        // clientList.forEach((c)=>{
+        //     Axios.post(`${baseURL}/getGrades`, {
+        //         userId: c.id
+        //     }).then((response)=>{
+        //        setNewGrade(response.data[0].media)
+        //     })
+
+        // })
     }, [deleteItem])
 
 
@@ -170,6 +183,10 @@ export default function Clients() {
                             <label>Nome: {c.name}</label>
                             <label>Endereço: {c.adress} </label>
                             <label>E-mail: {c.email}</label>
+                            {c.group === 'admin' &&
+                            <label>Nota: {c.grade.toFixed(2)}</label>
+                       
+                            }
                             <div className="icons">
                                 <FiEdit2 className="client-btn edit" onClick={() => editingClient(c)} />
                                 <FiTrash className="client-btn delete" onClick={() => deleteItem(c.id)} />

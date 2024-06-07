@@ -69,6 +69,11 @@ export default function CompletedTasks() {
   const [pages, setPages] = useState()
   const [actualPage, setActualPage] = useState(0)
   const [filtred, setFiltred] = useState(false)
+  const [evaluationTasks, setEvaluationTasks] = useState()
+  const [obsEvalution, setObsEvalution] = useState()
+  const [tasksNumber, setTasksNumber] = useState()
+  const [tablePage, setTablePage] = useState('completedTasks')
+  
 
 
 
@@ -88,13 +93,39 @@ export default function CompletedTasks() {
     }
 
     async function getpages() {
-      Axios.get(`${baseURL}/getPages`).then(async (response) => {
+      Axios.get(`${baseURL}/getCompletedPages`).then(async (response) => {
         setPages(response.data[0].pagina)
       })
+
+      if(user.group === 'admin'){
+        Axios.post(`${baseURL}/getEvaluationTasks`, {
+          userGroup: user.group
+        }).then(async(response)=>{
+          if(response.data !== 0){
+              setEvaluationTasks(response.data)
+              console.log(response.data.length)
+              setTasksNumber(response.data.length)
+            }
+          })
+        }else{
+          Axios.post(`${baseURL}/getEvaluationTasks`, {
+            userGroup: user.group,
+            userId: user.id
+          }).then(async(response)=>{
+            if(response.data !== 0){
+              setEvaluationTasks(response.data)
+              console.log(response.data)
+              setTasksNumber(response.data.length)
+              
+            }
+        })
+
+      }
     }
 
     getpages()
 
+    
 
   }, [])
 
@@ -104,15 +135,22 @@ export default function CompletedTasks() {
     setTasks([])
     Axios.get(`${baseURL}/getCompletedTasks`).then((response) => {
       newTasks = response.data
+      console.log(response.data)
       Axios.get(`${baseURL}/getObsList`).then((response) => {
         newObsList = response.data
+        setObsEvalution(response.data)
         if (user.group === "admin") {
           loadTasks(newTasks, newObsList)
 
         } else {
-          const tasksDocs = newTasks.filter((t) => user.email === t.userEmail)
-          const obsDocs = newObsList.filter((o) => user.name === o.client)
-          loadTasks(tasksDocs, obsDocs)
+          Axios.post(`${baseURL}/getCompletedUnitsTasks`, {
+            userId: user.id
+          }).then((response) => {
+            newTasks = response.data
+            const tasksDocs = newTasks.filter((t) => user.email === t.userEmail)
+            const obsDocs = newObsList.filter((o) => user.name === o.client)
+            loadTasks(tasksDocs, obsDocs)
+          })
 
 
         }
@@ -124,7 +162,7 @@ export default function CompletedTasks() {
 
     const isTaksEmpty = docs.length === 0
 
-
+    console.log(docs)
     if (!isTaksEmpty) {
       docs.forEach((doc) => {
         obsList = obs.filter((o) => doc.taskId === o.taskid)
@@ -142,7 +180,10 @@ export default function CompletedTasks() {
           subject: doc.subject,
           userId: doc.userId,
           taskId: doc.taskId,
-          taskImages: doc.taskImages
+          taskImages: doc.taskImages,
+          grade: doc.grade,
+          comment: doc.comment,
+          responsable: doc.responsable,
         })
       })
 
@@ -392,6 +433,13 @@ export default function CompletedTasks() {
 
   }
 
+  async function handleEvaluation(){
+    setTasks('')
+    setTablePage('evaluation')
+    loadTasks(evaluationTasks, obsEvalution)
+  }
+
+
   if (loading) {
     return (
 
@@ -507,8 +555,8 @@ export default function CompletedTasks() {
           </>
           :
           <div>
-            <div className="new-task more-task">
-
+            <div className="new-task more-task evaluation-container">
+              <label>Existem <span onClick={handleEvaluation}>{tasksNumber}</span>  chamados para serem avaliados</label>
               <div className="filter-select">
                 <label>Filtrar</label>
                 <select name="selectedType" {...register("selectedType")} value={selectedType} onChange={(e) => { filter(e) }}>
@@ -519,7 +567,7 @@ export default function CompletedTasks() {
               </div>
             </div>
 
-            {loadingMore ? <Loading /> : <TasksTable tasks={tasks} order={orderBy} page={'completedtasks'} />}
+            {loadingMore ? <Loading /> : <TasksTable tasks={tasks} order={orderBy} page={'completedtasks'} tipo={tablePage} />}
 
 
             <div className="bottom-menu">
@@ -535,7 +583,7 @@ export default function CompletedTasks() {
         }
       </div>
       {showModal && (
-        <Modal tipo={type} close={newClient} item={task} />
+        <Modal tipo={type} close={newClient} item={task} handleEvaluation={handleEvaluation} />
       )}
     </div>
   )
