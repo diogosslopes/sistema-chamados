@@ -52,7 +52,7 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
   const [grade, setGrade] = useState(item.grade)
   // const [responsable, setResponsable] = useState()
   const navigate = useNavigate()
-  let responsable = ''
+  let responsable = null
 
 
 
