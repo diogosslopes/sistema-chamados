@@ -50,7 +50,9 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
   const [statusList, setStatusList] = useState([])
   const [comment, setComment] = useState(item.comment)
   const [grade, setGrade] = useState(item.grade)
+  // const [responsable, setResponsable] = useState()
   const navigate = useNavigate()
+  let responsable = ''
 
 
 
@@ -62,7 +64,7 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
   })
 
 
-console.log(item)
+  console.log(item)
 
   useEffect(() => {
 
@@ -221,6 +223,12 @@ console.log(item)
   async function saveTask() {
 
 
+    if (user.group === 'admin' && status === 'Aberto' || status === 'Em Andamento' || status === 'Enviado p/ tec') {
+      // setResponsable(user.id)
+      responsable = user.id
+      console.log(responsable)
+    }
+
 
     if (tipo === 'edit') {
       Axios.put(`${baseURL}/editTask`, {
@@ -230,7 +238,8 @@ console.log(item)
         priority: priority,
         subject: subject,
         status: status,
-        type: taskType
+        type: taskType,
+        responsable: responsable
       }).then(() => {
         close()
         sendEmail()
@@ -245,9 +254,9 @@ console.log(item)
         comment: comment,
         grade: grade,
 
-      }).then(async() => {
+      }).then(async () => {
 
-       await Axios.post(`${baseURL}/getGrades`, {
+        await Axios.post(`${baseURL}/getGrades`, {
           userId: item.responsable
         }).then(async (response) => {
 
