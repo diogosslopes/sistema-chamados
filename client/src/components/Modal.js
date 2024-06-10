@@ -517,8 +517,10 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
             <p>{errors.obs?.message}</p>
           </article>
           <div className="buttons">
-            <button type='submit' >Salvar</button>
-            <button onClick={close}>Cancelar</button>
+            {tipo !== 'show' &&
+              <button type='submit' >Salvar</button>
+            }
+            <button onClick={close}>{tipo !== 'show' ? 'Cancelar' : 'Fechar' } </button>
           </div>
         </form>
       </div>

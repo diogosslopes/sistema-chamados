@@ -1226,7 +1226,16 @@ input:checked+.radio-tile label {
 
 /* -------------------------------------------------------------------------------------------------------------------------------------------------- */
 
+@media screen and (max-width: 1768px){
+  table td {
+    height: 50px;
+  }
+  
+}
+
 @media screen and (max-width: 700px) {
+
+
   .sidebar {
     width: 100%;
     height: auto;
@@ -1315,6 +1324,7 @@ input:checked+.radio-tile label {
     font-size: .8em;
     text-align: right;
     padding: 4px 10px;
+    height: 23px;
 
   }
 
@@ -1340,8 +1350,12 @@ input:checked+.radio-tile label {
 
   table td .task-btn {
     height: 20px;
-  }
 
+  }
+  table td div {
+    margin-top: -5px;
+
+  }
 
 }
 

@@ -100,15 +100,15 @@ export default function TasksTable({ tasks, order, getDoc, page, tipo }) {
             <table className="table-tasks">
                 <thead>
                     <tr className="table-head">
-                        <th scope="col" onClick={() => order('id', 'completedtask')}>ID</th>
-                        <th scope="col" onClick={() => order('client', 'completedtask')}>Cliente</th>
-                        <th scope="col" onClick={() => order('subject', 'completedtask')}>Assunto</th>
-                        <th scope="col" onClick={() => order('priority', 'completedtask')}>Prioridade</th>
-                        <th scope="col" onClick={() => order('status', 'completedtask')}>Status</th>
-                        <th scope="col" onClick={() => order('created', 'completedtask')}>Criado em</th>
+                        <th scope="col" >ID</th>
+                        <th scope="col" >Cliente</th>
+                        <th scope="col" >Assunto</th>
+                        <th scope="col" >Prioridade</th>
+                        <th scope="col" >Status</th>
+                        <th scope="col" >Criado em</th>
                         {page === 'completedtasks' &&
                             <>
-                                <th scope="col" onClick={() => order('concluded', 'completedtask')}>Concluido em</th>
+                                <th scope="col" >Concluido em</th>
                                 <th scope="col" >Nota</th>
                             </>
                         }
