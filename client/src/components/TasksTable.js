@@ -117,7 +117,7 @@ export default function TasksTable({ tasks, order, getDoc, page, tipo }) {
                             <th scope="col" >Nota</th>
                         }
 
-                        <th scope="col" className={hide} >#</th>
+                        <th scope="col"  >#</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -133,26 +133,26 @@ export default function TasksTable({ tasks, order, getDoc, page, tipo }) {
                                 {page === 'completedtasks' &&
                                     <>
                                         <td data-label="Concluido em">{task.concluded}</td>
-                                        <td data-label="Nota" className={`${show}`}>{task.grade}</td>
+                                        <td data-label="Nota" className={`${show} grade`}>{task.grade}</td>
                                     </>
                                 }
                                 {page === 'report' &&
-                                    <td data-label="Nota" className={`${show}`}>{task.grade}</td>
+                                    <td data-label="Nota" className={`${show} grade`}>{task.grade}</td>
                                 }
-                                <td data-label="#" className={hide}>
+                                <td data-label="#" >
                                     {page === 'completedtasks' ?
                                         <div>
                                             <button className="task-btn search" onClick={() => editClient('show', task)}><FiSearch size={17} /></button>
-                                            <button className="task-btn grade" style={{ display: disable }} onClick={() => evaluateTask('evaluate', task)}><FiClipboard size={17} /></button>
+                                            <button className="task-btn grade-button" style={{ display: disable }} onClick={() => evaluateTask('evaluate', task)}><FiClipboard size={17} /></button>
                                         </div>
                                         :
                                         <div >
                                             <button className="task-btn search" onClick={() => editClient('show', task)}><FiSearch size={17} /></button>
                                             <button className="task-btn edit" onClick={() => editClient('edit', task)}><FiEdit2 size={17} /></button>
                                             {user.group === 'admin' && (
-                                                <button className="task-btn check" onClick={() => completeTask(task)}><FiCheck size={17} /></button>
+                                                <button className={`task-btn check ${hide}`} onClick={() => completeTask(task)}><FiCheck size={17} /></button>
                                             )}
-                                            <button className="task-btn delete" onClick={() => deleteTask(task.taskId)}><FiTrash size={17} /></button>
+                                            <button className={`task-btn delete ${hide}`} onClick={() => deleteTask(task.taskId)}><FiTrash size={17} /></button>
                                         </div>
 
                                     }

@@ -761,7 +761,7 @@ table td svg {
   color: #fff;
 }
 
-.grade {
+.grade-button {
   background-color: #069441;
   color: #fff;
 }
@@ -1039,7 +1039,7 @@ th {
 }
 
 .hide-column{
-  display: none;
+  display: none !important;
 }
 .show-column{
   /* display: flex; */
