@@ -73,6 +73,12 @@ button:hover {
 
 }
 
+/* .button-hover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
 .new {
   display: show;
   transition: all ease-in-out .3s;

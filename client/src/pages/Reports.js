@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import Modal from "../components/Modal";
 import firebase from '../services/firebaseConnection';
 import TasksTable from "../components/TasksTable"
+import { SiMicrosoftexcel } from "react-icons/si"
 
 import { AuthContext } from "../context/auth";
 import { useForm } from 'react-hook-form'
@@ -19,6 +20,7 @@ import { ButtonGroup } from "@mui/material";
 import Axios from "axios";
 import moment from "moment";
 import TasksReport from "../documents/TasksReport";
+var XLSX = require("xlsx")
 
 
 
@@ -240,9 +242,32 @@ export default function Reports() {
     }else{
       toast.warn('Preencher datas')
     }
+  }
 
+  function handleXLSX(){
+    
+    let list = []
+    tasks.forEach((doc)=>{
+      list.push({
+        Id: doc.taskId,
+        Unidade: doc.client,
+        Criado: doc.created,
+        Tipo: doc.type,
+        Assunto: doc.subject,
+        Descrição: doc.obs,
+        Prioridade: doc.priority,
+        Nota: doc.grade,
+        Comentário: doc.comment
+      })
 
+    })
 
+    var wb = XLSX.utils.book_new()
+    var ws = XLSX.utils.json_to_sheet(list)
+
+    XLSX.utils.book_append_sheet(wb, ws, "Relatorio")
+
+    XLSX.writeFile(wb, 'Relatorio.xlsx')
   }
 
   return (
@@ -298,7 +323,10 @@ export default function Reports() {
         {tasks &&
           <div>
           <TasksTable tasks={tasks} page='report' />
-          <button className="button-hover" onClick={()=>{TasksReport(tasks)}}>Imprimir</button>
+
+            <button className="button-hover" onClick={()=>{TasksReport(tasks)}}>Imprimir </button>
+            <button className="button-hover" onClick={()=>{handleXLSX(tasks)}}><SiMicrosoftexcel size={15}/> Gerar XLS</button>
+
           </div>
         }
       </div>
