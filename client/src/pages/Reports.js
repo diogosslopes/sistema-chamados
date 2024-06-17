@@ -2,11 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Title from "../components/Title";
 import { FiEdit2, FiMessageSquare, FiPlus, FiSearch } from "react-icons/fi";
+import { FaRegFilePdf } from "react-icons/fa6"
+import { SiMicrosoftexcel } from "react-icons/si"
 import { Link } from 'react-router-dom'
 import Modal from "../components/Modal";
 import firebase from '../services/firebaseConnection';
 import TasksTable from "../components/TasksTable"
-import { SiMicrosoftexcel } from "react-icons/si"
 
 import { AuthContext } from "../context/auth";
 import { useForm } from 'react-hook-form'
@@ -112,10 +113,7 @@ export default function Reports() {
   }, [])
 
   function handleReport() {
-    console.log("Gerou")
 
-    console.log(dateEnd)
-    console.log(dateIni)
 
     if(dateIni !== '' && dateEnd !== ''){
 
@@ -145,7 +143,6 @@ export default function Reports() {
       }
   
       if (unity && type && status) {
-        console.log("Dados completos")
         Axios.post(`${baseURL}/getReport`, {
           caseNumber: 1,
           unity: unity,
@@ -324,8 +321,10 @@ export default function Reports() {
           <div>
           <TasksTable tasks={tasks} page='report' />
 
-            <button className="button-hover" onClick={()=>{TasksReport(tasks)}}>Imprimir </button>
-            <button className="button-hover" onClick={()=>{handleXLSX(tasks)}}><SiMicrosoftexcel size={15}/> Gerar XLS</button>
+            <div className="report-buttons">
+              <button className="button-hover" onClick={()=>{TasksReport(tasks)}}>Imprimir <FaRegFilePdf size={17} /> </button>
+              <button className="button-hover" onClick={()=>{handleXLSX(tasks)}}>Gerar <SiMicrosoftexcel size={17}/></button>
+            </div>
 
           </div>
         }

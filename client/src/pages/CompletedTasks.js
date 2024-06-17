@@ -103,7 +103,6 @@ export default function CompletedTasks() {
         }).then(async(response)=>{
           if(response.data !== 0){
               setEvaluationTasks(response.data)
-              console.log(response.data.length)
               setTasksNumber(response.data.length)
             }
           })
@@ -114,7 +113,6 @@ export default function CompletedTasks() {
           }).then(async(response)=>{
             if(response.data !== 0){
               setEvaluationTasks(response.data)
-              console.log(response.data)
               setTasksNumber(response.data.length)
               
             }
@@ -135,7 +133,6 @@ export default function CompletedTasks() {
     setTasks([])
     Axios.get(`${baseURL}/getCompletedTasks`).then((response) => {
       newTasks = response.data
-      console.log(response.data)
       Axios.get(`${baseURL}/getObsList`).then((response) => {
         newObsList = response.data
         setObsEvalution(response.data)
@@ -162,7 +159,6 @@ export default function CompletedTasks() {
 
     const isTaksEmpty = docs.length === 0
 
-    console.log(docs)
     if (!isTaksEmpty) {
       docs.forEach((doc) => {
         obsList = obs.filter((o) => doc.taskId === o.taskid)
@@ -380,12 +376,9 @@ export default function CompletedTasks() {
       type: e.target.value,
       table: 'completedtasks'
     }).then(async (response) => {
-      console.log(selectedType)
       if (response.data[0].pagina === 1) {
-        console.log("Uma Pagina" + response.data[0].pagina)
         setPages(response.data[0].pagina)
       } else {
-        console.log("Mais de uma Pagina" + response.data[0].pagina)
         setPages(response.data[0].pagina)
       }
     })

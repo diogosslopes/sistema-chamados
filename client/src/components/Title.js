@@ -4,10 +4,6 @@ import index from '../index.css'
 
 export default function Title({ children, name, task, id }) {
 
-    async function getGrade() {
-        console.log(task.grade)
-        console.log(task.comment)
-    }
 
 
     return (
@@ -18,7 +14,7 @@ export default function Title({ children, name, task, id }) {
                     <div className='title evalution-hover'>
                         {children}
                         <h1> {name} </h1>
-                        <FiCheckSquare className='evalution-hover' onMouseEnter={getGrade} size={28} />
+                        <FiCheckSquare className='evalution-hover'  size={28} />
                         <div className='evaluation'>
                             <span>Nota: {task.grade}</span>
                             <span>Comentário: {task.comment}</span>

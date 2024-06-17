@@ -34,7 +34,7 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
   const [status, setStatus] = useState(item.status)
   const [taskType, setTaskType] = useState(item.type)
   const [created, setCreated] = useState(item.created)
-  const [obs, setObs] = useState([])
+  const [obs, setObs] = useState()
   const [taskImages, setTaskImages] = useState([])
   const [subjects, setSubjects] = useState([])
   const [disable, setDisable] = useState(false)
@@ -64,7 +64,6 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
   })
 
 
-  console.log(item)
 
   useEffect(() => {
 
@@ -226,7 +225,6 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
     if (user.group === 'admin' && status === 'Aberto' || status === 'Em Andamento' || status === 'Enviado p/ tec') {
       // setResponsable(user.id)
       responsable = user.id
-      console.log(responsable)
     }
 
 
@@ -241,6 +239,9 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
         type: taskType,
         responsable: responsable
       }).then(() => {
+        if(obs){
+          saveObs(obs)
+        }
         close()
         sendEmail()
         getDoc()
@@ -265,7 +266,6 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
             grade: response.data[0].media
           })
 
-          console.log(response.data[0].media)
         })
 
         close()
@@ -278,10 +278,6 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
       close()
     }
 
-
-
-
-
   }
 
   function saveObs(newObs) {
@@ -292,6 +288,8 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
     } else {
       setIsObsOk(true)
     }
+
+    
 
     fullDate = format(new Date(), "dd/MM/yyyy HH:mm")
     const newOBS = {
@@ -311,9 +309,16 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
       client: newOBS.client,
       created: newOBS.created,
       obs: newOBS.obs,
-      taskid: newOBS.taskid
+      taskid: newOBS.taskid,
+      status: status
     }).then(() => {
       setObs("")
+      Axios.post(`${baseURL}/editStatus`,{
+        taskId: newOBS.taskid,
+        status: status
+      }).then(()=>{
+        getDoc()
+      })
       toast.success("Observação salva")
       sendEmail()
       close()

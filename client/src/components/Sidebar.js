@@ -10,6 +10,10 @@ export default function Sidebar() {
 
     const { user, signOut } = useContext(AuthContext)
 
+    function handleLink() {
+        document.querySelector('.side-link').classList.toggle('menu-selected')
+    }
+
 
 
     return (
@@ -19,21 +23,21 @@ export default function Sidebar() {
             </div>
 
             <div className="links">
-                <Link id='settings' to='/profile'>
+                <Link className='side-link' id='settings' to='/profile' onFocus={handleLink}>
                     <FiUser />
                     Perfil
                 </Link>
-                <Link to='/dashboard'>
+                <Link className='side-link' to='/dashboard'>
                     <FiTool />
                     Chamados
                 </Link>
-                <Link to='/completedtasks'>
+                <Link className='side-link' to='/completedtasks'>
                     <FiCheckSquare />
                     Chamados Concluidos
                 </Link>
                 {user.group === "admin" ? 
                     <>
-                        <Link onClick={() => document.querySelector('.class').classList.toggle('setting-options-show')} id='settings' to=''>
+                        <Link className='side-link' onClick={() => document.querySelector('.class').classList.toggle('setting-options-show')} id='settings' to=''>
                             <FiSettings />
                             Configurações
                         </Link>
@@ -42,19 +46,19 @@ export default function Sidebar() {
                                 <FiUsers />
                                 Unidades
                             </Link>
-                            <Link to='/reports'>
+                            <Link className='side-link' to='/reports'>
                                 <FiFileText />
                                 Relatorios
                             </Link>
-                            <Link to='/tasktypes'>
+                            <Link className='side-link' to='/tasktypes'>
                                 <FiType />
                                 Tipo
                             </Link>
-                            <Link to='/subjects'>
+                            <Link className='side-link' to='/subjects'>
                                 <FiTag />
                                 Assuntos
                             </Link>
-                            <Link to='/status'>
+                            <Link className='side-link' to='/status'>
                                 <FiList />
                                 Status
                             </Link>

@@ -33,12 +33,9 @@ export default function TasksTable({ tasks, order, getDoc, page, tipo }) {
     const [name, setName] = useState()
     const [disable, setDisable] = useState('none')
 
-    console.log(tasks)
 
 
     useEffect(() => {
-        console.log(tipo)
-        console.log(page)
         if (page === 'report') {
             setHide('hide-column')
             setShow('show-column')
@@ -53,7 +50,6 @@ export default function TasksTable({ tasks, order, getDoc, page, tipo }) {
 
         setType(t)
         setShowModal(!showModal)
-        console.log(disable)
 
         if (showModal === false) {
             setName(`Chamado numero ${item.taskId}`)
@@ -66,6 +62,7 @@ export default function TasksTable({ tasks, order, getDoc, page, tipo }) {
             setTask(item)
         }
     }
+    
 
     async function deleteTask(id) {
         setTaskId(id)

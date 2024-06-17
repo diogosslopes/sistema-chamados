@@ -73,11 +73,7 @@ button:hover {
 
 }
 
-/* .button-hover {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-} */
+
 
 .new {
   display: show;
@@ -247,7 +243,39 @@ button.button-hover {
 
 .links a:hover {
   background-color: #32383D;
+  }
+  
+  .links a:hover::after{
+    content: "";
+    position: absolute;
+    right: 10px;
+    width: 3px;
+    height: 16px;
+    background-color: #1BC6B4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    }
+    
+  .menu-selected{
+  background-color: #32383D;
+
 }
+
+.menu-selected::after{
+  content: "";
+  position: absolute;
+  right: 10px;
+  width: 3px;
+  height: 16px;
+  background-color: #1BC6B4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
 
 
 /* Dashboard */
@@ -1227,6 +1255,18 @@ input:checked+.radio-tile label {
 
 .evaluation span{
   margin-left: 10px;
+}
+
+.report-buttons{
+  display: flex;
+  align-items: center;
+  
+}
+
+.report-buttons button{
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
 
 

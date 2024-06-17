@@ -2,8 +2,6 @@ import '../index.css'
 
 export default function Select({ title, itens }) {
 
-  console.log(itens)
-
   return (
     <div>
       <label>{title}</label>
