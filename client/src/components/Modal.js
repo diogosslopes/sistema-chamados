@@ -501,7 +501,7 @@ export default function Modal({ tipo, close, item, getDoc, title, handleEvaluati
               <div className="new-obs">
                 <textarea value={obs} name="obs" {...register("obs")} onChange={(e) => setObs(e.target.value)} disabled={disable} placeholder="Observações" />
                 {!isObsOk && <p>Digite 10 caracteres ou mais.</p>}
-                <button type="button" onClick={(() => { saveObs(obs) })}>Enviar</button>
+                <button className="button-hover" type="button" onClick={(() => { saveObs(obs) })}>Enviar</button>
                 <div className="obs-list">
                   {obsList.map((o) => {
                     return (
